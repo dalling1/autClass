@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+ <head>
+  <meta charset=UTF-8>
+  <title></title>
+  <style>
+  </style>
+ </head>
+ <body>
+ <div id="messages"></div>
+
+ <script src="class.js"></script>
+
+ <script>
+  function msg(str){
+   document.getElementById('messages').innerHTML += str+'<br/>\n';
+  }
+ </script>
+
+ <script>
+
+  /*
+    The graph (a finite part of an infinite regular tree)
+  */
+  var valency = 5;
+  var depth = 5;
+  var G = new Graph('thegraph');
+
+  var t0 = performance.now();
+  G.add_regular_tree(valency,depth); // construct the tree
+  var t1 = performance.now();
+  msg('Call took ' + (t1 - t0) + ' milliseconds.')
+
+  msg('There are '+Vertex.number_of_vertices+' vertices');
+
+  /*
+    The automorphisms
+  */
+
+  var A1 = new Automorphism('aut1',5);
+  var A2 = new Automorphism('aut2',9); // valencies must match for composing automorphims?
+
+  // now using addresses for ref/dest:
+//  var ref1 = new Vertex('ref1',null,[]);
+//  var dest1 = new Vertex('dest1',null,[0,1]);
+  A1.set_reference_address([]);
+  A1.set_destination_address([0,1]);
+  A1.add_local_action([],[0,1,2,3,4]);
+
+
+//  var ref2 = new Vertex('ref2',null,[0,1]);
+//  var dest2 = new Vertex('dest2',null,[0]);
+  A2.set_reference_address([0,1]);
+  A2.set_destination_address([0]);
+
+ </script>
+ </body>
+</html>

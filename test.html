@@ -39,16 +39,17 @@
   var A1 = new Automorphism('aut1',5);
   var A2 = new Automorphism('aut2',9); // valencies must match for composing automorphims?
 
-  // now using addresses for ref/dest:
-//  var ref1 = new Vertex('ref1',null,[]);
-//  var dest1 = new Vertex('dest1',null,[0,1]);
+  // using addresses for ref/dest:
   A1.set_reference_address([]);
   A1.set_destination_address([0,1]);
+
   A1.add_local_action([],[0,1,2,3,4]);
+  A1.add_local_action([0],[0,1,2,3,4]);
+  A1.add_local_action([1],[0,1,2,3,4]);
+  A1.add_local_action([2],[0,1,2,3,4]);
+  A1.add_local_action([3],[0,1,2,3,4]);
+  A1.add_local_action([4],[0,1,2,3,4]);
 
-
-//  var ref2 = new Vertex('ref2',null,[0,1]);
-//  var dest2 = new Vertex('dest2',null,[0]);
   A2.set_reference_address([0,1]);
   A2.set_destination_address([0]);
 

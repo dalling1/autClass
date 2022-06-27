@@ -239,7 +239,7 @@ class Automorphism {
   this.address_destinations = null;
  }
 
- // in the following methods, 'address' is simply a (unique) string
+ // in the following methods, 'address' is an array of integers
  set_reference_address(address){
   this.reference_address = address;
  }
@@ -273,6 +273,15 @@ class Automorphism {
 
  unset_constant_local_action(){
   this.constant_local_action = false;
+ }
+
+ get_local_action_addresses(){
+  // returns an array of the addresses at which a local action is defined
+  return Object.keys(this.local_actions);
+ }
+
+ local_action_is_defined_at(address){
+  return (this.get_local_action_addresses().indexOf(address.toString())>-1?true:false);
  }
 
  local_actions_to_address_destinations(){ // todo

@@ -75,6 +75,7 @@
 
   var G3 = new Graph('v3graph');
   G3.add_regular_tree(3,5);
+  G3.alphabet = 'rbg'.split('');
   msg('G3 contains '+G3.vertices.length+' vertices');
 
   var A3 = new Automorphism('aut3',3);
@@ -89,7 +90,7 @@
   A3.add_local_action([],[0,1,2]);
   A3.set_constant_local_action();
   G3.vertices.map(s=>A3.destination_of_address(s.address));
-  G3.vertices.map(s=>msg(s+' -> '+A3.address_destinations[s.address]));
+  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
 
  </script>
  </body>

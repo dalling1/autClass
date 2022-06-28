@@ -47,7 +47,7 @@ class Vertex {
   return this.address.toString();
  }
 
- label(){ // todo
+ label(){
   // label the vertex according to the 'label alphabet' of its graph, indexed by the entries in the
   // vertex's address; special case: address is the empty array: set the label to \u{d8} (ie. 'Ø')
   const ROOT_VERTEX_LABEL = "\u{d8}";
@@ -377,10 +377,16 @@ class Automorphism {
 
   // and, finally, return the destination
   return destination;
-
  }
- // xxx
 
+ label(address,graph){
+  // label the address using the given graph's 'label alphabet'
+  const ROOT_VERTEX_LABEL = "\u{d8}";
+  if (address != undefined){
+   var thelabel = address.map(t=>graph.alphabet[t]).join("");
+   return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
+  }
+ }
 
 }
 

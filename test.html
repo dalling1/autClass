@@ -19,18 +19,18 @@
  <script>
 
   /*
-    The graph (a finite part of an infinite regular tree)
+    A graph (a finite part of an infinite regular tree)
   */
   var valency = 6;
   var depth = 5;
-  var G = new Graph('thegraph');
+  var G1 = new Graph('thegraph');
 
   var t0 = performance.now();
-  G.add_regular_tree(valency,depth); // construct the tree
+  G1.add_regular_tree(valency,depth); // construct the tree
   var t1 = performance.now();
-  msg('Call took ' + (t1 - t0) + ' milliseconds.')
+  msg('Constructed regular tree in G1 in ' + (t1 - t0) + ' milliseconds.')
 
-  msg('G1 contains '+Vertex.number_of_vertices+' vertices');
+  msg('G1 contains '+G1.vertices.length+' vertices');
 
   /*
     The automorphisms
@@ -68,13 +68,13 @@
 
 /*
   var t0 = performance.now();
-  G2.vertices.map(t=>t.toString()).map(s=>A2.destination_of_address(s));
+  G2.vertices.map(s=>A2.destination_of_address(s.address));
   var t1 = performance.now();
   msg("Finding destinations of addresses in G2 took " + (t1 - t0) + " milliseconds.")
 */
 
   var G3 = new Graph('v3graph');
-  G3.add_regular_tree(3,5);
+  G3.add_regular_tree(3,10);
   G3.alphabet = 'rbg'.split('');
   msg('G3 contains '+G3.vertices.length+' vertices');
 
@@ -89,8 +89,14 @@
   A3.set_destination_address([0]);
   A3.add_local_action([],[0,1,2]);
   A3.set_constant_local_action();
+
+  var t0 = performance.now();
   G3.vertices.map(s=>A3.destination_of_address(s.address));
-  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
+  var t1 = performance.now();
+  msg("Finding destinations of addresses in G2 took " + (t1 - t0) + " milliseconds.")
+
+  // show the destinations on the page
+//  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
 
  </script>
  </body>

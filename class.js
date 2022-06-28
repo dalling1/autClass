@@ -333,6 +333,17 @@ class Automorphism {
    return this.address_destinations[address];
   }
 
+  // is there a reference address? if not, we cannot go any further
+  if (this.reference_address == undefined){
+   return undefined;
+  }
+
+  // is the given address the reference address?
+  if (address == this.reference_address){
+   this.address_destinations[address] = this.destination_address; // store the destination
+   return this.destination_address;
+  }
+
   // otherwise, work along the path towards the reference address
   var neighbour = path_from_to(address,this.reference_address)[1];
   if (neighbour == undefined){

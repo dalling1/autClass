@@ -19,83 +19,42 @@
  <script>
 
   /*
-    A graph (a finite part of an infinite regular tree)
-  */
-  var valency = 6;
-  var depth = 5;
-  var G1 = new Graph('thegraph');
-
-  var t0 = performance.now();
-  G1.add_regular_tree(valency,depth); // construct the tree
-  var t1 = performance.now();
-  msg('Constructed regular tree in G1 in ' + (t1 - t0) + ' milliseconds.')
-
-  msg('G1 contains '+G1.vertices.length+' vertices');
-
-  /*
     The automorphisms
   */
 
-  var A1 = new Automorphism('aut1',6);
-  var A2 = new Automorphism('aut2',6); // valencies must match for composing automorphims?
+  var valency = 3;
+  var maxdepth = 15;
+  var LA = []; for (var n=0;n<valency;n++) LA.push(n);
 
-  // using addresses for ref/dest:
-  A1.set_reference_address([]);
-  A1.set_destination_address([0,1]);
-  A1.unset_constant_local_action();
+  var saveT = [];
 
-  A1.add_local_action([],[0,1,2,3,4,5]);
-  A1.add_local_action([0],[0,1,2,3,4,5]);
-  A1.add_local_action([1],[0,1,2,3,4,5]);
-  A1.add_local_action([2],[0,1,2,3,4,5]);
-  A1.add_local_action([3],[0,1,2,3,4,5]);
-  A1.add_local_action([4],[0,1,2,3,4,5]);
+  for (var depth=1; depth<=maxdepth; depth++){
 
-  A2.set_reference_address([0,1]);
-  A2.set_destination_address([0]);
-  A2.add_local_action([0,1],[5,4,3,2,1,0]); // valency 6 automorphism
-  A2.set_constant_local_action();
+   var G3 = new Graph('thegraph');
+   G3.add_regular_tree(valency,depth);
 
-  var G2 = new Graph(name='newgraph');
-  G2.add_regular_tree(6,3); // 187 vertices: 3 ms
-//  G2.add_regular_tree(6,5); // 4,687 vertices: 620 ms
-//  G2.add_regular_tree(6,6); // 23,437 vertices: 18,094 ms
-//  G2.add_regular_tree(6,7); // 117,187 vertices: 414,353 ms
-//  G2.add_regular_tree(6,8);   // 585,937 vertices
-//  G2.add_regular_tree(7,7);   // 391,910 vertices
-//  G2.add_regular_tree(7,8);   // 2,351,462 vertices
-  msg('G2 contains '+G2.vertices.length+' vertices');
-
-/*
-  var t0 = performance.now();
-  G2.vertices.map(s=>A2.destination_of_address(s.address));
-  var t1 = performance.now();
-  msg("Finding destinations of addresses in G2 took " + (t1 - t0) + " milliseconds.")
-*/
-
-  var G3 = new Graph('v3graph');
-  G3.add_regular_tree(3,10);
-  G3.alphabet = 'rbg'.split('');
-  msg('G3 contains '+G3.vertices.length+' vertices');
-
-  var A3 = new Automorphism('aut3',3);
+   var A3 = new Automorphism('aut3',valency);
 /*
   A3.set_reference_address([0,1]);
   A3.set_destination_address([0]);
   A3.add_local_action([0,1],[0,1,2]);
   A3.set_constant_local_action();
 */
-  A3.set_reference_address([]);
-  A3.set_destination_address([0]);
-  A3.add_local_action([],[0,1,2]);
-  A3.set_constant_local_action();
+   A3.set_reference_address([]);
+   A3.set_destination_address([0]);
+//   A3.add_local_action([],[0,1,2]);
+   A3.add_local_action([],LA);
+   A3.set_constant_local_action();
 
-  var t0 = performance.now();
-  G3.vertices.map(s=>A3.destination_of_address(s.address));
-  var t1 = performance.now();
-  msg("Finding destinations of addresses in G2 took " + (t1 - t0) + " milliseconds.")
+   var t0 = performance.now();
+   G3.vertices.map(s=>A3.destination_of_address(s.address));
+   var t1 = performance.now();
+   saveT.push(t1-t0);
+   msg('valency = '+valency+' depth = '+depth+' Naddresses = '+G3.vertices.length+' T = '+(t1-t0)+' ms'+(depth>7?' factor = '+(saveT[saveT.length-1]/saveT[saveT.length-2]).toFixed(2):''));
+  }
 
   // show the destinations on the page
+//  G3.alphabet = 'rbg'.split('');
 //  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
 
  </script>

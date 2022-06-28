@@ -327,7 +327,6 @@ class Automorphism {
  }
 
  destination_of_address(address){
-  var destination = undefined; // initialise
   // is the address already in the automorphism's list of destinations?
   // (this includes the reference address, if set with set_reference_address)
   if (this.destination_is_defined_at(address)){
@@ -336,6 +335,9 @@ class Automorphism {
 
   // otherwise, work along the path towards the reference address
   var neighbour = path_from_to(address,this.reference_address)[1];
+  if (neighbour == undefined){
+   return undefined;
+  }
   var neighbour_destination = this.destination_of_address(neighbour); // recursive step
 
   // if the neighbour's destination could not be determined, we are done:
@@ -359,10 +361,11 @@ class Automorphism {
   }
 
   // almost there
-  destination = [];
+  var destination = []; // initialise
   for (var i=0;i<neighbour_destination.length;i++){
    destination[i] = neighbour_destination[i]; // first, duplicate the destination
   }
+
   // and then add the permuted edge
   destination.push(neighbour_local_action[e]);
 

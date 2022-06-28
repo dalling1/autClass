@@ -23,7 +23,8 @@
   */
 
   var valency = 3;
-  var maxdepth = 15;
+  var maxdepth = 10;
+  // construct a trivial local action for this valency
   var LA = []; for (var n=0;n<valency;n++) LA.push(n);
 
   var saveT = [];
@@ -42,7 +43,6 @@
 */
    A3.set_reference_address([]);
    A3.set_destination_address([0]);
-//   A3.add_local_action([],[0,1,2]);
    A3.add_local_action([],LA);
    A3.set_constant_local_action();
 

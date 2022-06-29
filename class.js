@@ -297,21 +297,19 @@ class Automorphism {
 
  set_address_destination(address,destination){
   // if the address destination already exists, just warn, then proceed
-  if (this.get_address_destinations().indexOf(address.toString())>-1){
-   if (this.address_destinations[address] != undefined){
-    console.log('Warning: address destination already exists');
-   }
+  if (this.address_destinations[address] != undefined){
+   console.log('Warning: address destination already exists');
   }
   this.address_destinations[address] = destination;
  }
 
- get_address_destinations(){
+ get_addresses_with_destinations(){
   // returns an array of the addresses whose destinations are defined
   return Object.keys(this.address_destinations);
  }
 
  destination_is_defined_at(address){
-  return (this.get_address_destinations().indexOf(address.toString())>-1?true:false);
+  return (this.address_destinations[address] != undefined);
  }
 
  local_actions_to_address_destinations(){ // todo

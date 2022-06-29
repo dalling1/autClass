@@ -57,6 +57,19 @@
 //  G3.alphabet = 'rbg'.split('');
 //  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
 
+  msg('-------------------------------------');
+
+  // "list-to-list"-type automorphism:
+  var A4 = new Automorphism('aut4',3);
+  A4.set_address_destination([],[0]);
+  A4.set_address_destination([0],[]);
+  A4.set_address_destination([1],[0,1]);
+  A4.set_address_destination([2],[0,2]);
+  A4.set_address_destination([0,1],[1]);
+  A4.set_address_destination([0,2],[2]);
+  A4.set_address_destination([1,0],[0,1,0]);
+  A4.set_address_destination([1,2],[0,1,2]);
+
  </script>
  </body>
 </html>

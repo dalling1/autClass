@@ -1,5 +1,6 @@
 //todo:
 // [ ] eventually we need a draw() method for the Graph class (use SVGraph?)
+// [ ] remove msg() from the print_addresses_and_destinations() Automorphism class method...
 
 
 // vertex class
@@ -401,6 +402,10 @@ class Automorphism {
    var thelabel = address.map(t=>graph.alphabet[t]).join("");
    return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
   }
+ }
+
+ print_addresses_and_destinations(use_labels_from_graph){
+  this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
  }
 
 }

@@ -506,3 +506,29 @@ function simplify_address(address){
  }
  return address;
 }
+
+function compose(A1,A2,include_undefined_final_destinations=false){
+ // apply automorphism A1 and then A2, returning a new automorphism
+ if (A1.valency != A2.valency){
+  return undefined;
+ }
+ // get "original" addresses from A1
+ var addresses = A1.get_addresses_with_destinations();
+ // get "original" destinations from A1
+ var destinations = addresses.map(s=>A1.address_destinations[s]);
+ // update the destinations of those destinations using A2
+ destinations.map(s=>A2.destination_of_address(s)); // fills in the look-up table of A2 using 'destinations' (if defined)
+
+ // finally, extract those final destinations
+ var final_destinations = destinations.map(s=>A1.address_destinations[s]);
+
+ // then create a new automorphism which has that address mapping
+ var Aout = new Automorphism();
+ Aout.valency=A1.valency;
+ for (var i=0;i<addresses.length;i++){
+  if (include_undefined_final_destinations || final_destinations[i] != undefined){
+   Aout.set_address_destination(addresses[i],final_destinations[i]);
+  }
+ }
+ return Aout;
+}

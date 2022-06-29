@@ -23,7 +23,8 @@
   */
 
   var valency = 3;
-  var maxdepth = 10;
+//  var maxdepth = 10;
+  var maxdepth = 3;
   // construct a trivial local action for this valency
   var LA = []; for (var n=0;n<valency;n++) LA.push(n);
 
@@ -56,8 +57,10 @@
   // show the destinations on the page
 //  G3.alphabet = 'rbg'.split('');
 //  G3.vertices.map(s=>msg(s.label()+' -> '+A3.label(A3.address_destinations[s.address],G3)));
-
   msg('-------------------------------------');
+  msg('A3 mappings:')
+//  A3.get_addresses_with_destinations().map(s=>msg(A3.label(s,G3)+' -> '+A3.label(A3.address_destinations[s],G3)));
+  A3.print_addresses_and_destinations(G3);
 
   // "list-to-list"-type automorphism:
   var A4 = new Automorphism('aut4',3);
@@ -69,6 +72,18 @@
   A4.set_address_destination([0,2],[2]);
   A4.set_address_destination([1,0],[0,1,0]);
   A4.set_address_destination([1,2],[0,1,2]);
+
+  msg('-------------------------------------');
+  msg('compose(A3,A4) mappings: omit undefined final destinations:')
+  var A3A4 = compose(A3,A4);
+//  A3A4.get_addresses_with_destinations().map(s=>msg(A3A4.label(s,G3)+' -> '+A3A4.label(A3A4.address_destinations[s],G3)));
+  A3A4.print_addresses_and_destinations(G3);
+
+  msg('-------------------------------------');
+  msg('compose(A3,A4) mappings: include undefined final destinations:')
+  var A3A4 = compose(A3,A4,true);
+//  A3A4.get_addresses_with_destinations().map(s=>msg(A3A4.label(s,G3)+' -> '+A3A4.label(A3A4.address_destinations[s],G3)));
+  A3A4.print_addresses_and_destinations(G3);
 
  </script>
  </body>

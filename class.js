@@ -1,13 +1,5 @@
 //todo:
-// [-] add toString() method to the Vertex class, for use as associative array keys in the
-//          graph local actions array - no, we will use addresses for that, not vertices
-// [x] note that a vertex can only belong to one graph
-// [x] note: "address" refers to the path from the origin to a given vertex; "label" is that address translated into the graph's alphabet
-// [x] note: in the Automorphism class, everything is now defined in terms of "addresses", not vertices
-//           -- automorphisms are now independent of the Vertex class
-//
 // [ ] eventually we need a draw() method for the Graph class (use SVGraph?)
-// [ ] what to do about .label() for vertices not attached to a graph? use 'abcdef...' alphabet?
 
 
 // vertex class

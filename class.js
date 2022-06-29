@@ -239,7 +239,7 @@ class Automorphism {
   }
  }
 
- set_destination_address(address){
+ set_reference_destination(address){
   this.destination_address = address;
   if (this.reference_address != undefined){
    this.address_destinations[this.reference_address] = address;

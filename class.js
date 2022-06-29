@@ -305,7 +305,11 @@ class Automorphism {
 
  get_addresses_with_destinations(){
   // returns an array of the addresses whose destinations are defined
-  return Object.keys(this.address_destinations);
+  var address_strings = Object.keys(this.address_destinations);
+  var addresses = address_strings.map(s=>s.split(',').map(t=>Number(t)));
+  // correct the conversion of "" (Number("") returns zero)
+  addresses[address_strings.indexOf("")] = [];
+  return addresses;
  }
 
  destination_is_defined_at(address){

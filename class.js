@@ -23,18 +23,6 @@ class Vertex {
   this.address = address;
  }
 
-/*
- add_vertex_to_graph(G){
-  // make this vertex a vertex of graph G
-  if (G.type = 'Graph'){
-   this.graph = G;
-   if (G.vertices.indexOf(this) == -1){
-    G.add_vertex_to_graph(this);
-   }
-  }
- }
-*/
-
  toString(){
   if (this.address == undefined) return 'undefined';
   return this.address.toString();
@@ -50,7 +38,9 @@ class Vertex {
   }
  }
 
-
+ applyAutomorphism(A){
+  return A.address_destinations[this.address];
+ }
 
 
 }
@@ -84,7 +74,6 @@ class Edge {
 // are class methods to make drawings from these theoretical graphs.
 //
 class Graph {
-
  constructor (
   name,
  ){
@@ -198,6 +187,9 @@ class Graph {
   this.edges.map(e=>console.log(e.from.label()+' -'+(e.is_directed?'>':'-')+' '+e.to.label()));
  }
 
+ applyAutomorphism(A){
+  return this.vertices.map(s=>s.applyAutomorphism(A));
+ }
 
 }
 

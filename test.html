@@ -93,6 +93,26 @@
   // build the look-up table for A2 (ie. A2.address_destinations) using the addresses of vertices in G3
   G3.vertices.map(s=>A2.destination_of_address(s.address));
 
+  msg('----------------------------------------------');
+  var A2A3 = compose(A2,A3);
+  msg('compose(A2,A3) mappings:');
+  A2A3.print_addresses_and_destinations(G3);
+
+  msg('----------------------------------------------');
+  var A3A2 = compose(A3,A2);
+  msg('compose(A3,A2) mappings:');
+  A3A2.print_addresses_and_destinations(G3);
+
+  // add a far-off address to A3 so that we can find its destinations under A3A2
+  A3.destination_of_address([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]);
+  // and another
+  A3.destination_of_address([2,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]);
+  // ... but we must also re-calculate A3A2 now that A3 is a bit "bigger" (A3's look-up table is bigger)
+  msg('----------------------------------------------');
+  var A3A2 = compose(A3,A2);
+  msg('Bigger compose(A3,A2) mappings:');
+  A3A2.print_addresses_and_destinations(G3);
+
 
  </script>
  </body>

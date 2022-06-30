@@ -324,13 +324,18 @@ class Automorphism {
  }
 
  destination_of_address(address){
+  // legal address?
+  if (Math.max(...address)>=this.valency){
+   return undefined;
+  }
+
   // is the address already in the automorphism's list of destinations?
   // (this includes the reference address, if set with set_reference_address)
   if (this.destination_is_defined_at(address)){
    return this.address_destinations[address];
   }
 
-  // is there a reference address? if not, we cannot go any further
+  // otherwise, is there a reference address? if not, we cannot go any further
   if (this.reference_address == undefined){
    return undefined;
   }

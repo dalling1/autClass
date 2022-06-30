@@ -517,7 +517,7 @@ function compose(A1,A2,include_undefined_final_destinations=false){
  destinations.map(s=>A2.destination_of_address(s)); // fills in the look-up table of A2 using 'destinations' (if defined)
 
  // finally, extract those final destinations
- var final_destinations = destinations.map(s=>A1.address_destinations[s]);
+ var final_destinations = destinations.map(s=>A2.address_destinations[s]);
 
  // then create a new automorphism which has that address mapping
  var Aout = new Automorphism();

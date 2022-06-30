@@ -12,7 +12,10 @@
 
  <script>
   function msg(str){
+   // post the message on the page:
    document.getElementById('messages').innerHTML += str+'<br/>\n';
+   // and scroll smoothly to the end:
+   window.scroll({top:document.body.scrollHeight, behavior:'smooth'});
   }
  </script>
 

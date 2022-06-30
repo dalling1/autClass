@@ -39,12 +39,6 @@
    G3.add_regular_tree(valency,depth);
 
    var A3 = new Automorphism('aut3',valency);
-/*
-  A3.set_reference_address([0,1]);
-  A3.set_reference_destination([0]);
-  A3.add_local_action([0,1],[0,1,2]);
-  A3.set_constant_local_action();
-*/
    A3.set_reference_address([]);
    A3.set_reference_destination([0]);
    A3.add_local_action([],LA);
@@ -87,6 +81,18 @@
   var A3A4 = compose(A3,A4,true);
 //  A3A4.get_addresses_with_destinations().map(s=>msg(A3A4.label(s,G3)+' -> '+A3A4.label(A3A4.address_destinations[s],G3)));
   A3A4.print_addresses_and_destinations(G3);
+
+
+  var A2 = new Automorphism('automorphism2');
+  A2.valency = 3;
+  A2.set_reference_address([0,1]);
+  A2.set_reference_destination([0]);
+  A2.add_local_action([0,1],[0,1,2]);
+  A2.set_constant_local_action();
+
+  // build the look-up table for A2 (ie. A2.address_destinations) using the addresses of vertices in G3
+  G3.vertices.map(s=>A2.destination_of_address(s.address));
+
 
  </script>
  </body>

@@ -405,6 +405,29 @@ class Automorphism {
   this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
  }
 
+ find_local_action_at_address(address){
+  var destination = this.destination_of_address(address);
+  if (destination == undefined){
+   return undefined;
+  }
+
+  var local_action = [];
+
+  // address's neighbours map to destination's neighbours:
+  // their mapping is the local action permutation
+  var neighbours = get_neighbours_of_address(address,this.valency);
+  var destination_neighbours = get_neighbours_of_address(destination,this.valency);
+  for (var i=0;i<neighbours.length;i++){
+   if (destination_neighbours[i].length){
+    local_action[i] = destination_neighbours[i][destination_neighbours[i].length-1];
+   } else {
+    // if the neighbour's address is [] then this is the 'loop-back' edge
+    local_action[i] = i;
+   }
+  }
+  return local_action;
+ }
+
 }
 
 
@@ -533,4 +556,23 @@ function compose(A1,A2,include_undefined_final_destinations=false){
   }
  }
  return Aout;
+}
+
+function get_neighbours_of_address(address,valency){
+ var neighbours = [];
+ for (var v=0;v<valency;v++){
+  neighbours[v] = [];
+  // copy the address and add the vth neighbour, unless the vth neighbour is the 'loop-back' edge
+  if (address[address.length-1] != v){
+   for (var i=0;i<address.length;i++){
+    neighbours[v].push(address[i]);
+   }
+   neighbours[v].push(v);
+  } else {
+   for (var i=0;i<address.length-1;i++){
+    neighbours[v].push(address[i]);
+   }
+  }
+ }
+ return neighbours;
 }

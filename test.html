@@ -41,6 +41,7 @@
    var A3 = new Automorphism('aut3',valency);
    A3.set_reference_address([]);
    A3.set_reference_destination([0]);
+   LA = [1,2,0];
    A3.add_local_action([],LA);
    A3.set_constant_local_action();
 
@@ -103,6 +104,7 @@
   msg('compose(A3,A2) mappings:');
   A3A2.print_addresses_and_destinations(G3);
 
+/*
   // add a far-off address to A3 so that we can find its destinations under A3A2
   A3.destination_of_address([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]);
   // and another
@@ -112,7 +114,14 @@
   var A3A2 = compose(A3,A2);
   msg('Bigger compose(A3,A2) mappings:');
   A3A2.print_addresses_and_destinations(G3);
+*/
 
+
+  msg('----------------------------------------------');
+  // calculate some local actions using the address/destination pairs (not ref/local_action)
+  var addresses = A3.get_addresses_with_destinations();
+  A3.find_local_action_at_address(addresses[12])
+  A3.find_local_actions();
 
  </script>
  </body>

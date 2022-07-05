@@ -306,6 +306,15 @@ class Automorphism {
   return addresses;
  }
 
+ get_addresses_with_local_actions(){
+  // returns an array of the addresses whose local actions are defined explicitly (ie. not with a constant local action)
+  var address_strings = Object.keys(this.local_actions);
+  var addresses = address_strings.map(s=>s.split(',').map(t=>Number(t)));
+  // correct the conversion of "" (Number("") returns zero)
+  addresses[address_strings.indexOf("")] = [];
+  return addresses;
+ }
+
  destination_is_defined_at(address){
   address = simplify_address(address);
   return (this.address_destinations[address] != undefined);

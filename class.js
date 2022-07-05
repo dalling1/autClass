@@ -392,7 +392,10 @@ class Automorphism {
   return destination;
  }
 
- label(address,graph){
+ label(address,graph=null){
+  if (graph==null){
+   var graph = new Graph();
+  }
   // label the address using the given graph's 'label alphabet'
   const ROOT_VERTEX_LABEL = "\u{d8}";
   if (address != undefined){

@@ -221,6 +221,7 @@ class Automorphism {
 
  // in the following methods, 'address' is an array of integers
  set_reference_address(address){
+  address = simplify_address(address);
   this.reference_address = address;
   if (this.destination_address != undefined){
    this.address_destinations[address] = this.destination_address;
@@ -228,6 +229,7 @@ class Automorphism {
  }
 
  set_reference_destination(address){
+  address = simplify_address(address);
   this.destination_address = address;
   if (this.reference_address != undefined){
    this.address_destinations[this.reference_address] = address;
@@ -246,6 +248,7 @@ class Automorphism {
  }
 
  add_local_action(address,perm){
+  address = simplify_address(address);
   if (this.test_permutation(perm)){
    this.local_actions[address] = perm; // uses toString() method on the address array
   } else {
@@ -267,10 +270,12 @@ class Automorphism {
  }
 
  local_action_is_defined_at(address){
+  address = simplify_address(address);
   return (this.get_local_action_addresses().indexOf(address.toString())>-1?true:false);
  }
 
  get_local_action_at_address(address){
+  address = simplify_address(address);
   // first check for constant local action: use the LA of the reference address
   if (this.constant_local_action){
    address = this.reference_address;
@@ -284,6 +289,7 @@ class Automorphism {
  }
 
  set_address_destination(address,destination){
+  address = simplify_address(address);
   // if the address destination already exists, just warn, then proceed
   if (this.address_destinations[address] != undefined){
    console.log('Warning: address destination already exists');
@@ -301,6 +307,7 @@ class Automorphism {
  }
 
  destination_is_defined_at(address){
+  address = simplify_address(address);
   return (this.address_destinations[address] != undefined);
  }
 
@@ -319,6 +326,7 @@ class Automorphism {
  }
 
  destination_of_address(address){
+  address = simplify_address(address);
   // legal address?
   if (Math.max(...address)>=this.valency){
    return undefined;
@@ -394,6 +402,7 @@ class Automorphism {
   // label the address using the given graph's 'label alphabet'
   const ROOT_VERTEX_LABEL = "\u{d8}";
   if (address != undefined){
+   address = simplify_address(address);
    var thelabel = address.map(t=>graph.alphabet[t]).join("");
    return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
   }
@@ -492,6 +501,8 @@ function path_from_to(from_address,to_address){
 
 
 function get_common_prefix(address1,address2){
+ address1 = simplify_address(address1);
+ address2 = simplify_address(address2);
  var prefix = [];
  for (var i=0;i<Math.min(address1.length,address2.length);i++){
   if (address1[i]==address2[i]){
@@ -506,11 +517,15 @@ function get_common_prefix(address1,address2){
 
 
 function addresses_are_neighbours(address1,address2){
+ address1 = simplify_address(address1);
+ address2 = simplify_address(address2);
  return (Math.abs(address1.length - address2.length) == 1);
 }
 
 
 function get_edge(address1,address2){
+ address1 = simplify_address(address1);
+ address2 = simplify_address(address2);
  if (addresses_are_neighbours(address1,address2)){
   // edge 'colour' is the difference between the neighbours:
   if (address1.length>address2.length){
@@ -561,6 +576,7 @@ function compose(A1,A2,include_undefined_final_destinations=false){
 }
 
 function get_neighbours_of_address(address,valency){
+ address = simplify_address(address);
  var neighbours = [];
  for (var v=0;v<valency;v++){
   neighbours[v] = [];

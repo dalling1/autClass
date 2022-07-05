@@ -404,9 +404,14 @@ class Automorphism {
  }
 
  find_local_action_at_address(address){
+  address = simplify_address(address);
   var destination = this.destination_of_address(address);
   if (destination == undefined){
    return undefined;
+  }
+
+  if (this.local_action_is_defined_at(address)){
+   return this.local_actions[address];
   }
 
   var local_action = [];
@@ -416,13 +421,13 @@ class Automorphism {
    var edge_at_destination = get_edge(destination,this.destination_of_address(neighbours[v]));
    local_action[edge_at_neighbour] = edge_at_destination;
   }
+  this.local_actions[address] = local_action;
   return local_action;
  }
 
  find_local_actions(){
   var addresses = this.get_addresses_with_destinations();
-  var local_actions = addresses.map(s=>this.find_local_action_at_address(s));
-  return local_actions;
+  addresses.map(s=>this.find_local_action_at_address(s));
  }
 
 }

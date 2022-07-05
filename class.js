@@ -412,20 +412,19 @@ class Automorphism {
   }
 
   var local_action = [];
-
-  // address's neighbours map to destination's neighbours:
-  // their mapping is the local action permutation
   var neighbours = get_neighbours_of_address(address,this.valency);
-  var destination_neighbours = get_neighbours_of_address(destination,this.valency);
-  for (var i=0;i<neighbours.length;i++){
-   if (destination_neighbours[i].length){
-    local_action[i] = destination_neighbours[i][destination_neighbours[i].length-1];
-   } else {
-    // if the neighbour's address is [] then this is the 'loop-back' edge
-    local_action[i] = i;
-   }
+  for (var v=0;v<neighbours.length;v++){
+   var edge_at_neighbour = get_edge(address,neighbours[v]); // in case the neighbours are not in order...
+   var edge_at_destination = get_edge(destination,this.destination_of_address(neighbours[v]));
+   local_action[edge_at_neighbour] = edge_at_destination;
   }
   return local_action;
+ }
+
+ find_local_actions(){
+  var addresses = this.get_addresses_with_destinations();
+  var local_actions = addresses.map(s=>this.find_local_action_at_address(s));
+  return local_actions;
  }
 
 }

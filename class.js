@@ -404,7 +404,7 @@ class Automorphism {
   }
  }
 
- print_addresses_and_destinations(use_labels_from_graph){
+ print_addresses_and_destinations(use_labels_from_graph=null){
   this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
  }
 

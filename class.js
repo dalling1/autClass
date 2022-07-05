@@ -1,8 +1,3 @@
-//todo:
-// [ ] eventually we need a draw() method for the Graph class (use SVGraph?)
-// [ ] remove msg() from the print_addresses_and_destinations() Automorphism class method...
-
-
 // vertex class
 //
 // Objects of this class are theoretical vertices of graphs, rather than geometric (drawn)

@@ -435,17 +435,21 @@ class Automorphism {
 
  test_local_action_at_address(address){
   address = simplify_address(address);
-  var local_action = this.find_local_action_at_address(address);
-  // check whether the local action at this address is consistent with the local action at its neighbours
-  // undefined local actions are considered consistent with anything (ie. not inconsistent)
-  var neighbours = get_neighbours_of_address(address,this.valency);
-  var neighbour_local_actions = neighbours.map(s=>this.find_local_action_at_address(s));
+  var local_action = this.local_actions[address];
   if (local_action == undefined){
    return true;
   }
 
+  // check whether the local action at this address is consistent with the local action at its neighbours
+  // undefined local actions are considered consistent with anything (ie. not inconsistent)
+  var neighbours = get_neighbours_of_address(address,this.valency);
+  var neighbour_local_actions = neighbours.map(s=>this.local_actions[s]);
+
   var is_consistent = true;
   for (var i=0;i<neighbour_local_actions.length;i++){
+   if (neighbour_local_actions[i] == undefined){
+    break;
+   }
    var e = get_edge(address,neighbours[i]);
    if (neighbour_local_actions[i][e] != local_action[e]){
     is_consistent = false;

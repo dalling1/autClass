@@ -264,14 +264,14 @@ class Automorphism {
   this.constant_local_action = false;
  }
 
- get_local_action_addresses(){
-  // returns an array of the addresses at which a local action is defined
+ get_local_action_address_strings(){
+  // returns an array of the address strings at which a local action is defined
   return Object.keys(this.local_actions);
  }
 
  local_action_is_defined_at(address){
   address = simplify_address(address);
-  return (this.get_local_action_addresses().indexOf(address.toString())>-1?true:false);
+  return (this.get_local_action_address_strings().indexOf(address.toString())>-1?true:false);
  }
 
  get_local_action_at_address(address){
@@ -299,20 +299,12 @@ class Automorphism {
 
  get_addresses_with_destinations(){
   // returns an array of the addresses whose destinations are defined
-  var address_strings = Object.keys(this.address_destinations);
-  var addresses = address_strings.map(s=>s.split(',').map(t=>Number(t)));
-  // correct the conversion of "" (Number("") returns zero)
-  addresses[address_strings.indexOf("")] = [];
-  return addresses;
+  return keys_to_addresses(Object.keys(this.address_destinations));
  }
 
  get_addresses_with_local_actions(){
   // returns an array of the addresses whose local actions are defined explicitly (ie. not with a constant local action)
-  var address_strings = Object.keys(this.local_actions);
-  var addresses = address_strings.map(s=>s.split(',').map(t=>Number(t)));
-  // correct the conversion of "" (Number("") returns zero)
-  addresses[address_strings.indexOf("")] = [];
-  return addresses;
+  return keys_to_addresses(Object.keys(this.local_actions));
  }
 
  destination_is_defined_at(address){
@@ -324,13 +316,6 @@ class Automorphism {
   // only proceed if the address_destinations do not already exist
   if (this.address_destinations == undefined){
    console.log('convert reference address and local actions to address destinations');
-  }
- }
-
- address_destinations_to_local_actions(){ // todo
-  // only proceed if the reference_address and local_actions do not already exist
-  if (this.reference_address == undefined && Object.keys(this.local_actions).length == 0){
-   console.log('convert address destinations to reference address and local actions');
   }
  }
 
@@ -467,6 +452,11 @@ class Automorphism {
    }
   }
   return is_consistent;
+ }
+
+ test_local_actions(){
+  // test the local action at all addresses in the local_actions array
+  return this.get_addresses_with_local_actions().map(s=>this.test_local_action_at_address(s));
  }
 
 }
@@ -623,4 +613,17 @@ function get_neighbours_of_address(address,valency){
   }
  }
  return neighbours;
+}
+
+function keys_to_addresses(keys_array){
+ return keys_array.map(s=>key_to_address(s));
+}
+
+function key_to_address(key){
+ // intercept conversion of "" (Number("") returns zero)
+ if (key==""){
+  return [];
+ }
+ var address = key.split(',').map(t=>Number(t));
+ return address;
 }

@@ -406,6 +406,10 @@ class Automorphism {
   this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
  }
 
+ print_addresses_and_local_actions(use_labels_from_graph=null){
+  this.get_addresses_with_local_actions().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.local_actions[s],use_labels_from_graph)));
+ }
+
  calculate_local_action_at_address(address){
   address = simplify_address(address);
   var destination = this.destination_of_address(address);

@@ -406,7 +406,7 @@ class Automorphism {
   this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
  }
 
- find_local_action_at_address(address){
+ calculate_local_action_at_address(address){
   address = simplify_address(address);
   var destination = this.destination_of_address(address);
   if (destination == undefined){
@@ -428,9 +428,9 @@ class Automorphism {
   return local_action;
  }
 
- find_local_actions(){
+ calculate_local_actions(){
   var addresses = this.get_addresses_with_destinations();
-  addresses.map(s=>this.find_local_action_at_address(s));
+  addresses.map(s=>this.calculate_local_action_at_address(s));
  }
 
  test_local_action_at_address(address){
@@ -548,6 +548,10 @@ function addresses_are_neighbours(address1,address2){
 
 
 function get_edge(address1,address2){
+ if (address1 == undefined || address2 == undefined){
+  return undefined;
+ }
+
  address1 = simplify_address(address1);
  address2 = simplify_address(address2);
  if (addresses_are_neighbours(address1,address2)){
@@ -565,6 +569,9 @@ function get_edge(address1,address2){
 
 
 function simplify_address(address){
+ if (address == undefined){
+  return undefined;
+ }
  for (var i=0;i<address.length-1;i++){
   if (address[i]==address[i+1]){
    address.splice(i,2); // remove both duplicated elements (ie. remove 2 elements starting at position i)

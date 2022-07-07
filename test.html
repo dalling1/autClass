@@ -120,8 +120,20 @@
   msg('----------------------------------------------');
   // calculate some local actions using the address/destination pairs (not ref/local_action)
   var addresses = A3.get_addresses_with_destinations();
-  A3.find_local_action_at_address(addresses[12])
-  A3.find_local_actions();
+  A3.calculate_local_action_at_address(addresses[12])
+  A3.calculate_local_actions();
+
+  msg('----------------------------------------------');
+  // break a constraint:
+  msg('Breaking the local action constraint at address [0,1]');
+  A3.add_local_action([0,1],[2,1,0]); // Note: one constraint at this address is still okay: [1,2,0] has the same third place as [2,1,0]
+//  A3.add_local_action([0,1],[2,0,1]);
+  var okayLA = A3.test_local_actions();
+  A3.get_addresses_with_local_actions().map(s=>msg(A3.label(s)+': '+(A3.test_local_action_at_address(s)?'is okay':'fails constraints')));
+  msg('----------------------------------------------');
+  msg('----------------------------------------------');
+//  A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?msg(A3.label(s)+': okay'):msg(s+' fails')));
+  A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?'':msg(A3.label(s)+' fails')));
 
  </script>
  </body>

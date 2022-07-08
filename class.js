@@ -467,6 +467,11 @@ class Automorphism {
   return this.get_addresses_with_local_actions().map(s=>this.test_local_action_at_address(s));
  }
 
+ local_actions_all_equal(){
+  var addresses = this.get_addresses_with_local_actions();
+  return addresses.every(s=>s.toString()==addresses[0].toString());
+ }
+
 }
 
 

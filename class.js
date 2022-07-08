@@ -407,7 +407,7 @@ class Automorphism {
  }
 
  print_addresses_and_local_actions(use_labels_from_graph=null){
-  this.get_addresses_with_local_actions().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.local_actions[s],use_labels_from_graph)));
+  this.get_addresses_with_local_actions().map(s=>msg(this.label(s,use_labels_from_graph)+': ['+this.local_actions[s]+']'));
  }
 
  calculate_local_action_at_address(address){
@@ -469,7 +469,7 @@ class Automorphism {
 
  local_actions_all_equal(){
   var addresses = this.get_addresses_with_local_actions();
-  return addresses.every(s=>s.toString()==addresses[0].toString());
+  return addresses.every(s=>(s.toString()==addresses[0].toString()||s==undefined));
  }
 
 }

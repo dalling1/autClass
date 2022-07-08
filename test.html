@@ -11,6 +11,9 @@
  <script src="class.js"></script>
 
  <script>
+  function clearmsg(){
+   document.getElementById('messages').innerHTML = '';
+  }
   function msg(str){
    // post the message on the page:
    document.getElementById('messages').innerHTML += str+'<br/>\n';

@@ -15,6 +15,7 @@
    document.getElementById('messages').innerHTML = '';
   }
   function msg(str){
+   str = str.replace(/\n/g,'<br/>');
    // post the message on the page:
    document.getElementById('messages').innerHTML += str+'<br/>\n';
    // and scroll smoothly to the end:
@@ -29,8 +30,8 @@
   */
 
   var valency = 3;
-//  var maxdepth = 10;
-  var maxdepth = 3;
+  var maxdepth = 5;
+//  var maxdepth = 3;
   // construct a trivial local action for this valency
   var LA = []; for (var n=0;n<valency;n++) LA.push(n);
 
@@ -61,7 +62,7 @@
   msg('-------------------------------------');
   msg('A3 mappings:')
 //  A3.get_addresses_with_destinations().map(s=>msg(A3.label(s,G3)+' -> '+A3.label(A3.address_destinations[s],G3)));
-  A3.print_addresses_and_destinations(G3);
+  msg(A3.print_addresses_and_destinations(G3));
 
   // "list-to-list"-type automorphism:
   var A4 = new Automorphism('aut4',3);
@@ -78,13 +79,13 @@
   msg('compose(A3,A4) mappings: omit undefined final destinations:')
   var A3A4 = compose(A3,A4);
 //  A3A4.get_addresses_with_destinations().map(s=>msg(A3A4.label(s,G3)+' -> '+A3A4.label(A3A4.address_destinations[s],G3)));
-  A3A4.print_addresses_and_destinations(G3);
+  msg(A3A4.print_addresses_and_destinations(G3));
 
   msg('-------------------------------------');
   msg('compose(A3,A4) mappings: include undefined final destinations:')
   var A3A4 = compose(A3,A4,true);
 //  A3A4.get_addresses_with_destinations().map(s=>msg(A3A4.label(s,G3)+' -> '+A3A4.label(A3A4.address_destinations[s],G3)));
-  A3A4.print_addresses_and_destinations(G3);
+  msg(A3A4.print_addresses_and_destinations(G3));
 
 
   var A2 = new Automorphism('automorphism2');
@@ -100,12 +101,12 @@
   msg('----------------------------------------------');
   var A2A3 = compose(A2,A3);
   msg('compose(A2,A3) mappings:');
-  A2A3.print_addresses_and_destinations(G3);
+  msg(A2A3.print_addresses_and_destinations(G3));
 
   msg('----------------------------------------------');
   var A3A2 = compose(A3,A2);
   msg('compose(A3,A2) mappings:');
-  A3A2.print_addresses_and_destinations(G3);
+  msg(A3A2.print_addresses_and_destinations(G3));
 
 /*
   // add a far-off address to A3 so that we can find its destinations under A3A2
@@ -116,7 +117,7 @@
   msg('----------------------------------------------');
   var A3A2 = compose(A3,A2);
   msg('Bigger compose(A3,A2) mappings:');
-  A3A2.print_addresses_and_destinations(G3);
+  msg(A3A2.print_addresses_and_destinations(G3));
 */
 
 
@@ -137,6 +138,25 @@
   msg('----------------------------------------------');
 //  A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?msg(A3.label(s)+': okay'):msg(s+' fails')));
   A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?'':msg(A3.label(s)+' fails')));
+
+
+ /*
+    A graph to work with
+ */
+  msg('####################################################################')
+  var G = new Graph('newgraph');
+  var valency = 3;
+  var depth = 10;
+  G.add_regular_tree(valency,depth); // 3070 vertices
+
+  // apply A3:
+  var GA3 = G.applyAutomorphism(A3);
+  // example mapping:
+  var v = G.vertices[111]
+  msg('Testing with vertex 111 of G with automorphism A3:')
+  msg(v+' maps to '+A3.destination_of_address(v.address))
+  msg(v.label()+' maps to '+A3.destination_of_address(v.address))
+  msg(v.label()+' maps to '+A3.label(v.applyAutomorphism(A3)))
 
  </script>
  </body>

@@ -363,6 +363,11 @@ class Automorphism {
    return undefined;
   }
 
+  if (!neighbour_local_action.map(t=>t!=undefined).every(t=>t)){
+   // there is at least one undefined entry in the neighbour's local action
+   return undefined;
+  }
+
   // which edge connects this address to the neighbour?
   var e = get_edge(address,neighbour);
   if (e == undefined){

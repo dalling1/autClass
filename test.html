@@ -38,16 +38,15 @@
   var saveT = [];
 
   for (var depth=1; depth<=maxdepth; depth++){
-
-   var G3 = new Graph('thegraph');
-   G3.add_regular_tree(valency,depth);
-
    var A3 = new Automorphism('aut3',valency);
    A3.set_reference_address([]);
    A3.set_reference_destination([0]);
    LA = [1,2,0];
    A3.add_local_action([],LA);
    A3.set_constant_local_action();
+
+   var G3 = new Graph('thegraph');
+   G3.add_regular_tree(valency,depth);
 
    var t0 = performance.now();
    G3.vertices.map(s=>A3.destination_of_address(s.address));
@@ -147,16 +146,19 @@
   var G = new Graph('newgraph');
   var valency = 3;
   var depth = 10;
+  var depth = 9;
   G.add_regular_tree(valency,depth); // 3070 vertices
 
+//  G.vertices.map(s=>A3.destination_of_address(s.address));
+
   // apply A3:
-  var GA3 = G.applyAutomorphism(A3);
+  var GA3 = G.apply_automorphism(A3);
   // example mapping:
   var v = G.vertices[111]
   msg('Testing with vertex 111 of G with automorphism A3:')
   msg(v+' maps to '+A3.destination_of_address(v.address))
   msg(v.label()+' maps to '+A3.destination_of_address(v.address))
-  msg(v.label()+' maps to '+A3.label(v.applyAutomorphism(A3)))
+  msg(v.label()+' maps to '+A3.label(v.apply_automorphism(A3)))
 
  </script>
  </body>

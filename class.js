@@ -412,11 +412,15 @@ class Automorphism {
  }
 
  print_addresses_and_destinations(use_labels_from_graph=null){
-  this.get_addresses_with_destinations().map(s=>msg(this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)));
+  var output = '';
+  this.get_addresses_with_destinations().map(s => output += this.label(s,use_labels_from_graph)+' -> '+this.label(this.address_destinations[s],use_labels_from_graph)+'\n');
+  return output;
  }
 
  print_addresses_and_local_actions(use_labels_from_graph=null){
-  this.get_addresses_with_local_actions().map(s=>msg(this.label(s,use_labels_from_graph)+': ['+this.local_actions[s]+']'));
+  var output = '';
+  this.get_addresses_with_local_actions().map(s => output += this.label(s,use_labels_from_graph)+': ['+this.local_actions[s]+']'+'\n');
+  return output;
  }
 
  calculate_local_action_at_address(address){

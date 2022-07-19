@@ -34,7 +34,7 @@ class Vertex {
  }
 
  applyAutomorphism(A){
-  return A.address_destinations[this.address];
+  return A.destination_of_address(this.address);
  }
 
 

@@ -186,6 +186,10 @@ class Graph {
   return this.vertices.map(s=>s.applyAutomorphism(A));
  }
 
+ list_of_address(){
+  return this.vertices.map(s=>s.address);
+ }
+
 }
 
 

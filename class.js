@@ -33,7 +33,7 @@ class Vertex {
   }
  }
 
- applyAutomorphism(A){
+ apply_automorphism(A){
   return A.destination_of_address(this.address);
  }
 
@@ -182,8 +182,8 @@ class Graph {
   this.edges.map(e=>console.log(e.from.label()+' -'+(e.is_directed?'>':'-')+' '+e.to.label()));
  }
 
- applyAutomorphism(A){
-  return this.vertices.map(s=>s.applyAutomorphism(A));
+ apply_automorphism(A){
+  return this.vertices.map(s=>s.apply_automorphism(A));
  }
 
  list_of_address(){

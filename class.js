@@ -482,6 +482,7 @@ class Automorphism {
 
  local_actions_all_equal(){
   var addresses = this.get_addresses_with_local_actions();
+  // ignore undefined local actions, but fail for undefined entries (eg. [undefined,1,undefined]), which is not incompatible with [2,1,0], say)
   return addresses.every(s=>(s.toString()==addresses[0].toString()||s==undefined));
  }
 

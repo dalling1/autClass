@@ -37,6 +37,9 @@ class Vertex {
   return A.destination_of_address(this.address);
  }
 
+ svg_id(){
+  return this.graph.svg_vertex_ids[this.label()];
+ }
 
 }
 
@@ -84,6 +87,9 @@ class Graph {
   // note: this is the set of edge 'types' or 'colours'
   // -- although we might have an additional mapping from strings to colours for drawing purposes
   this.alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+  // set up a place to store information about the graph if it is drawn on the page
+  this.svg_vertex_ids = [];
  }
 
 /*

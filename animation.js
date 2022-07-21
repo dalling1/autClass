@@ -5,7 +5,7 @@ function quickviz(G){
  return output;
 }
 
-function drawgraph(G){
+function drawgraph(G,A){
  var data = quickviz(G);
  var useformat = 'svg';
 // var useengine = 'neato';
@@ -25,18 +25,37 @@ function drawgraph(G){
    }
   }
   msg('Drawing graph "'+G.name+'": found '+Object.keys(G.svg_vertex_ids).length+' SVG nodes');
+
+  // store the original vertex positions
+  G.vertices.map(s => s.position=get_vertex_position(s.svg_id()));
+
+  // store the transformed positions, if an automorphism is provided
+  if (A!=undefined){
+   G.vertices.map(s => s.newposition = get_vertex_position(G.svg_vertex_ids[A.label(s.apply_automorphism(A),G)]));
+  }
+
  });
 }
 
-function animategraph(G){
+function animate_automorphism(G,A){
  drawgraph(G);
+
+ // find the transformed addresses, and store their positions
+ // (this is a bit convoluted, because of where the label() methods lie, but it will suffice)
+//xxx G.vertices.map(s => s.position=get_vertex_position(s.svg_id()));
+// A.label(s.apply_automorphism(A),G)
 }
 
 function get_vertex_position(id){
- // children[1] is the ellipse object:
- var x = Number(document.getElementById(id).children[1].getAttribute('cx'));
- var y = Number(document.getElementById(id).children[1].getAttribute('cy'));
- return [x,y];
+ var el = document.getElementById(id);
+ if (el){
+  // children[1] is the ellipse object:
+  var x = Number(el.children[1].getAttribute('cx'));
+  var y = Number(el.children[1].getAttribute('cy'));
+  return [x,y];
+ } else {
+  return [undefined,undefined];
+ }
 }
 
 function move_vertex(id,x,y){
@@ -130,19 +149,22 @@ function animate_from_to(from,to,percent,method='default'){
  return [newx, newy];
 }
 
-function animate_move_vertex(id,newpos){
+function animate_move_vertex(id,newpos,speed=0.5){
+ // bail out if destination is not well-formed
+ if (newpos==undefined || newpos.length!=2) return undefined;
+
  // move the node to the requested position
  var percentage = 0.0;
- var increment = 5.0;
-//x var nodesvg = this.svg;
-//x var oldPosition = [this.x, this.y, this.z];
-//x var newPosition = [this.altx, this.alty, this.altz];
-//x var thisnode = this;
+// var speed = 5.0;
+// var speed = 0.3;
 
  var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
- var animationStyle = animationsList[7];
+ var animationStyle = animationsList[2];
  if (animationStyle=='none'){
-  increment = 100.0;
+  speed = 100.0;
+ }
+ if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
+  speed = 100.0;
  }
 
  var oldPosition = get_vertex_position(id);
@@ -154,19 +176,10 @@ function animate_move_vertex(id,newpos){
 
   move_vertex(id,intermediatePosition[0],intermediatePosition[1]);
 
-//x  nodesvg.setAttribute("cx", intermediatePosition[0]);
-//x  nodesvg.setAttribute("cy", intermediatePosition[1]);
-//x  nodesvg.setAttribute("z-index", intermediatePosition[2]);
-//xx  var moveedges = thisnode.graph.findEdgesTo(thisnode.name);
-//xx  for (var i=moveedges.length;i>0;i--) moveedges[i-1].movingUpdate();
-
   // perform some actions when finished:
   if (percentage>=100.0){
    window.clearInterval(thistimer);
-//x   thisnode.setOldLocation(oldPosition);
-//x   thisnode.setAltLocation(oldPosition);
-//x   thisnode.setLocation(newPosition);
   }
-  percentage += increment;
+  percentage += speed;
  });
 }

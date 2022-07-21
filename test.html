@@ -46,7 +46,7 @@
     <button onclick="drawgraph(G,A3);enablebutton('runbutton')">Draw G.aut(A3)</button>
     <button id="runbutton" disabled="disabled" onclick="disablebutton('runbutton');enablebutton('backbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
     <button id="backbutton" disabled="disabled" onclick="disablebutton('backbutton');enablebutton('runbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    <input type="range" id="speed" min="0" max="10" step="0.1" value="0.5">
+    <input type="range" id="speed" min="0" max="10" step="0.1" value="1.5">
    </div>
    <div id="thegraph"></div>
   </div>

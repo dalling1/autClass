@@ -12,9 +12,10 @@ function drawgraph(G,A){
  var useengine = 'twopi';
  hpccWasm.graphviz.layout(data, useformat, useengine).then(svg => {
   const svgdiv = document.getElementById("thegraph"); // the div where the SVG graph should be attached
+  const svgdivwrapper = document.getElementById("thegraphwrapper"); // the div where the SVG graph should be attached
   svgdiv.innerHTML = svg;
-  var scrolldistance = svgdiv.scrollHeight/2 - svgdiv.clientHeight/2;
-  svgdiv.scroll({top:scrolldistance, behavior:'smooth'});
+  var scrolldistance = svgdivwrapper.scrollHeight/2 - svgdivwrapper.clientHeight/2;
+  svgdivwrapper.scroll({top:scrolldistance, behavior:'smooth'});
 
   // find the drawn SVG nodes and store their IDs in the graph
   G.svg_vertex_ids = [];

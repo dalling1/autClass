@@ -22,12 +22,34 @@
     display: flex;
     overflow: auto;
    }
+   #thegraph {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+/*    border: 3px solid #5f5;*/
+   }
+   #thegraph svg {
+    width: 100%;
+   }
+   #graphbuttons{
+    padding: 2px;
+    position: absolute;
+    width: 100%;
+   }
   </style>
  </head>
  <body>
  <div id="wrapper">
-  <div id="messages"class="inner"></div>
-  <div id="thegraph"class="inner"></div>
+  <div id="messages" class="inner"></div>
+  <div id="thegraphwrapper" class="inner">
+   <div id="graphbuttons">
+    <button onclick="drawgraph(G,A3);enablebutton('runbutton')">Draw G.aut(A3)</button>
+    <button id="runbutton" disabled="disabled" onclick="disablebutton('runbutton');enablebutton('backbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backbutton" disabled="disabled" onclick="disablebutton('backbutton');enablebutton('runbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    <input type="range" id="speed" min="0" max="10" step="0.1" value="0.5">
+   </div>
+   <div id="thegraph"></div>
+  </div>
  </div>
 
  <script src="class.js"></script>
@@ -47,6 +69,15 @@
 //   window.scroll({top:document.body.scrollHeight, behavior:'smooth'});
    const messages = document.getElementById('messages');
    messages.scroll({top:messages.scrollHeight, behavior:'smooth'});
+  }
+  function enablebutton(id){
+   document.getElementById(id).removeAttribute("disabled");
+  }
+  function disablebutton(id){
+   document.getElementById(id).setAttribute("disabled","disabled");
+  }
+  function getspeed(){
+   return Number(document.getElementById("speed").value);
   }
  </script>
 

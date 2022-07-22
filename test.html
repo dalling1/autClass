@@ -15,21 +15,28 @@
    }
    .inner{
     border: 1px solid #f55;
-    width: calc(50% - 2px);
     height: calc(100vh - 2px);
     margin: 0;
     padding: 0;
     display: flex;
+    flex-grow: 0;
     overflow: auto;
+   }
+   #messages{
+    width: calc(30% - 2px);
+   }
+   #thegraphwrapper{
+    width: calc(70% - 2px);
    }
    #thegraph {
     width: 100%;
     margin: 0;
     padding: 0;
-/*    border: 3px solid #5f5;*/
+    background-color: #555;
    }
    #thegraph svg {
     width: 100%;
+    background-color: #555;
    }
    #graphbuttons{
     padding: 2px;

@@ -129,6 +129,8 @@ function easeOutElastic(x){  // https://easings.net
 
 function animate_from_to(from,to,percent,method='default'){
  if (from.length<2 || to.length<2) console.log("error in animate_from_to: coordinates are not (at least) two-dimensional");
+ if (to[0]==undefined) to[0] = 0;
+ if (to[1]==undefined) to[1] = 100000;
 
  if (method=='none'){
   var animationPosition = (percent<50.0 ? 0.0 : 1.0);
@@ -145,8 +147,15 @@ function animate_from_to(from,to,percent,method='default'){
  } else if (method=='easeOutElastic'){
   var animationPosition = easeOutElastic(percent/100.0);
  }
- var newx = from[0] + animationPosition*(to[0]-from[0]);
- var newy = from[1] + animationPosition*(to[1]-from[1]);
+ // at 100%, set the position explicitly (to avoid round-off errors)
+// if (Math.abs(percent-100.0)<0.01){
+ if (percent>=100.0){
+  var newx = to[0];
+  var newy = to[1];
+ } else {
+  var newx = from[0] + animationPosition*(to[0]-from[0]);
+  var newy = from[1] + animationPosition*(to[1]-from[1]);
+ }
  return [newx, newy];
 }
 
@@ -156,8 +165,6 @@ function animate_move_vertex(id,newpos,speed=0.5){
 
  // move the node to the requested position
  var percentage = 0.0;
-// var speed = 5.0;
-// var speed = 0.3;
 
  var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
  var animationStyle = animationsList[2];

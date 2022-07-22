@@ -1,5 +1,6 @@
 function quickviz(G){
- var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width=0.1 label=""]\n edge [color="#cccccc"]\n';
+ var noderadius = 0.25;
+ var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width='+noderadius+' label=""]\n edge [color="#cccccc"]\n';
  G.edges.map(s => output+=' '+s.from.label()+'--'+s.to.label()+'\n');
  output += '}\n';
  return output;
@@ -27,6 +28,9 @@ function drawgraph(G,A){
   }
   msg('Drawing graph "'+G.name+'": found '+Object.keys(G.svg_vertex_ids).length+' SVG nodes');
 
+  // remove the spurious background polygon
+  document.getElementById("thegraph").querySelector("polygon").remove();
+
   // store the original vertex positions
   G.vertices.map(s => s.position=get_vertex_position(s.svg_id()));
 
@@ -34,6 +38,9 @@ function drawgraph(G,A){
   if (A!=undefined){
    G.vertices.map(s => s.newposition = get_vertex_position(G.svg_vertex_ids[A.label(s.apply_automorphism(A),G)]));
   }
+
+  // colour the SVG nodes
+  G.vertices.map(s=>colour_vertex(G,s.svg_id()));
 
  });
 }
@@ -190,4 +197,49 @@ function animate_move_vertex(id,newpos,speed=0.5){
   }
   percentage += speed;
  });
+}
+
+function angle_between_points(pos1,pos2,pos3){
+ // returns the angle at at pos2, in degrees
+ var a = Math.pow(pos2[0]-pos1[0],2) + Math.pow(pos2[1]-pos1[1],2);
+ var b = Math.pow(pos2[0]-pos3[0],2) + Math.pow(pos2[1]-pos3[1],2);
+ var c = Math.pow(pos3[0]-pos1[0],2) + Math.pow(pos3[1]-pos1[1],2);
+ return (180.0/Math.PI)*Math.acos((a+b-c)/Math.sqrt(4*a*b));
+}
+
+function scaled_distance_between_points(pos1,pos2){
+ // find the distance between the given points in pixels and then scale by the size of the SVG object
+ var svg = document.getElementsByTagName('svg')[0];
+ var svgsize = 0.5*Math.max(svg.getBBox().width, svg.getBBox().height); // take max of width and height
+ var dist = Math.sqrt(Math.pow(pos2[0]-pos1[0],2) + Math.pow(pos2[1]-pos1[1],2));
+ return dist/svgsize;
+}
+
+function hsv_to_rgb(H,S,V){
+ // H = hue (degrees)
+ // S = saturation (value between 0 and 1)
+ // V = value (value between 0 and 1)
+ // Algorithm from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
+ return [hsvF(H,S,V,5),hsvF(H,S,V,3),hsvF(H,S,V,1)];
+}
+
+function hsvF(H,S,V,n){
+ var k = (n+H/60.0) % 6;
+ var rgbValue = V - V*S*Math.max(0,Math.min(...[k, 4-k, 1]));
+ return Math.round(255.0*rgbValue);
+}
+
+function colour_vertex(G,id){
+ // set the fill colour of the SVG node according to the node's location:
+ // use the root node as the origin and create an HSV colour from the angle
+ // between the node, the origin and an arbitrary axis; convert this to RGB
+ // and set the SVG object's 'fill' property
+ var origin = get_vertex_position(G.svg_vertex_ids['Ø']);
+ var axis = [origin[0]+1.0,origin[1]]; // horizontal axis
+ var point = get_vertex_position(id);
+ var H = angle_between_points(point,origin,axis);
+ var S = scaled_distance_between_points(origin,point);
+ var V = S; // this makes things more vivid
+ var colour = hsv_to_rgb(H,S,V);
+ document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
 }

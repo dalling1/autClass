@@ -40,7 +40,7 @@ function drawgraph(G,A){
   }
 
   // colour the SVG nodes
-  G.vertices.map(s=>colour_vertex(G,s.svg_id()));
+  G.vertices.map(s=>colour_vertex_wheel(G,s.svg_id()));
 
  });
 }
@@ -203,12 +203,9 @@ function animate_move_vertex(id,newpos,speed=0.5){
  });
 }
 
-function angle_between_points(pos1,pos2,pos3){
- // returns the angle at at pos2, in degrees
- var a = Math.pow(pos2[0]-pos1[0],2) + Math.pow(pos2[1]-pos1[1],2);
- var b = Math.pow(pos2[0]-pos3[0],2) + Math.pow(pos2[1]-pos3[1],2);
- var c = Math.pow(pos3[0]-pos1[0],2) + Math.pow(pos3[1]-pos1[1],2);
- return (180.0/Math.PI)*Math.acos((a+b-c)/Math.sqrt(4*a*b));
+function angle_between_points(centre,point){
+ var angle_in_radians = -Math.atan2(point[1] - centre[1], point[0] - centre[0]) - Math.PI / 2;
+ return (180.0/Math.PI)*angle_in_radians;
 }
 
 function scaled_distance_between_points(pos1,pos2){
@@ -233,15 +230,14 @@ function hsvF(H,S,V,n){
  return Math.round(255.0*rgbValue);
 }
 
-function colour_vertex(G,id){
+function colour_vertex_wheel(G,id){
  // set the fill colour of the SVG node according to the node's location:
  // use the root node as the origin and create an HSV colour from the angle
- // between the node, the origin and an arbitrary axis; convert this to RGB
+ // between the node, the origin and the x-axis; convert this to RGB
  // and set the SVG object's 'fill' property
  var origin = get_vertex_position(G.svg_vertex_ids['Ø']);
- var axis = [origin[0]+1.0,origin[1]]; // horizontal axis
  var point = get_vertex_position(id);
- var H = angle_between_points(point,origin,axis);
+ var H = angle_between_points(origin,point);
  var S = scaled_distance_between_points(origin,point);
  var V = S; // this makes things more vivid
  var colour = hsv_to_rgb(H,S,V);

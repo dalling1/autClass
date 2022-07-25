@@ -33,6 +33,8 @@ function drawgraph(G,A){
 
   // store the original vertex positions
   G.vertices.map(s => s.position=get_vertex_position(s.svg_id()));
+  // calculate the angle for each vertex relative to the root node and the x-axis
+//  var theta = G.vertices.map(s=>angle_between_points(get_vertex_position(G.vertices[0].svg_id()),get_vertex_position(s.svg_id())))
 
   // store the transformed positions, if an automorphism is provided
   if (A!=undefined){
@@ -204,7 +206,7 @@ function animate_move_vertex(id,newpos,speed=0.5){
 }
 
 function angle_between_points(centre,point){
- var angle_in_radians = -Math.atan2(point[1] - centre[1], point[0] - centre[0]) - Math.PI / 2;
+ var angle_in_radians = 90.0-Math.atan2(point[1] - centre[1], point[0] - centre[0]) - Math.PI / 2;
  return (180.0/Math.PI)*angle_in_radians;
 }
 

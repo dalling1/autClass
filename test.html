@@ -55,6 +55,12 @@
     <button onclick="drawgraph(G,A4);enablebutton('runbutton')">G.aut(A4)</button>
     <button id="runbutton" disabled="disabled" onclick="disablebutton('runbutton');enablebutton('backbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
     <button id="backbutton" disabled="disabled" onclick="disablebutton('backbutton');enablebutton('runbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    <br/>
+    <button onclick="drawgraph(GG,AA);enablebutton('runGG')">GG.aut(AA)</button>
+    <button onclick="drawgraph(GG,AA2);enablebutton('runGG')">GG.aut(AA2)</button>
+    <button id="runGG" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backGG" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    <br/>
     <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
    </div>
    <div id="thegraph"></div>
@@ -228,6 +234,25 @@
   msg(v.label()+' maps to '+A3.destination_of_address(v.address))
   msg(v.label()+' maps to '+A3.label(v.apply_automorphism(A3)))
 */
+
+ /* another graph, higher valency */
+ var GG = new Graph('highvalencygraph');
+ GG.add_regular_tree(7,4); // valency 7 depth 4
+ GG.alphabet.splice(GG.alphabet.indexOf('g'),1); // remove 'g' from the edge labels...
+
+ var AA = new Automorphism('valency7automorphism');
+ AA.valency = 7;
+ AA.set_reference_address([]);
+ AA.set_reference_destination([0,1,0]);
+ AA.add_local_action([],[1,0,3,2,5,4,6]);
+ AA.set_constant_local_action();
+
+ var AA2 = new Automorphism('valency7automorphism2');
+ AA2.valency = 7;
+ AA2.set_reference_address([]);
+ AA2.set_reference_destination([1]);
+ AA2.add_local_action([],[0,1,2,3,4,5,6]); // trivial LA
+ AA2.set_constant_local_action();
 
  </script>
  </body>

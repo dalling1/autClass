@@ -1,13 +1,12 @@
-function quickviz(G){
- var noderadius = 0.25;
+function quickviz(G,noderadius=0.25){
  var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width='+noderadius+' label=""]\n edge [color="#cccccc"]\n';
  G.edges.map(s => output+=' '+s.from.label()+'--'+s.to.label()+'\n');
  output += '}\n';
  return output;
 }
 
-function drawgraph(G,A){
- var data = quickviz(G);
+function drawgraph(G,A,noderadius=0.25){
+ var data = quickviz(G,noderadius);
  var useformat = 'svg';
 // var useengine = 'neato';
  var useengine = 'twopi';

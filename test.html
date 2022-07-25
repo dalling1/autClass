@@ -54,7 +54,7 @@
      <button onclick="drawgraph(G,A2);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
      <button onclick="drawgraph(G,A3);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
      <button onclick="drawgraph(G,A4);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4)</button>
-     <button onclick="drawgraph(G,A5);enablebutton('runG')disablebuttons('animateGGbuttons');">G.aut(A5)</button>
+     <button onclick="drawgraph(G,A5);enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5)</button>
      <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
      <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
     </div>

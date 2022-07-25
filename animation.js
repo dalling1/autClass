@@ -170,15 +170,19 @@ function animate_move_vertex(id,newpos,speed=0.5){
  // bail out if destination is not well-formed
  if (newpos==undefined || newpos.length!=2) return undefined;
 
+ if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
+  // don't run the animation for nodes with nowhere to go
+  // set the colour to 'invisible'
+  document.getElementById(id).children[1].setAttribute('fill','rgba(0,0,0,0)');
+  return undefined;
+ }
+
  // move the node to the requested position
  var percentage = 0.0;
 
  var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
  var animationStyle = animationsList[2];
  if (animationStyle=='none'){
-  speed = 100.0;
- }
- if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
   speed = 100.0;
  }
 

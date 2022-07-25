@@ -50,17 +50,21 @@
   <div id="messages" class="inner"></div>
   <div id="thegraphwrapper" class="inner">
    <div id="graphbuttons">
-    <button onclick="drawgraph(G,A2);enablebutton('runbutton')">G.aut(A2)</button>
-    <button onclick="drawgraph(G,A3);enablebutton('runbutton')">G.aut(A3)</button>
-    <button onclick="drawgraph(G,A4);enablebutton('runbutton')">G.aut(A4)</button>
-    <button id="runbutton" disabled="disabled" onclick="disablebutton('runbutton');enablebutton('backbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
-    <button id="backbutton" disabled="disabled" onclick="disablebutton('backbutton');enablebutton('runbutton');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    <br/>
-    <button onclick="drawgraph(GG,AA);enablebutton('runGG')">GG.aut(AA)</button>
-    <button onclick="drawgraph(GG,AA2);enablebutton('runGG')">GG.aut(AA2)</button>
-    <button id="runGG" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
-    <button id="backGG" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    <br/>
+    <div id="Gbuttons">
+     <button onclick="drawgraph(G,A2);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
+     <button onclick="drawgraph(G,A3);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
+     <button onclick="drawgraph(G,A4);enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4)</button>
+     <button onclick="drawgraph(G,A5);enablebutton('runG')disablebuttons('animateGGbuttons');">G.aut(A5)</button>
+     <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+     <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    </div>
+    <div id="GGbuttons">
+     <button onclick="drawgraph(GG,AA);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA)</button>
+     <button onclick="drawgraph(GG,AA2);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2)</button>
+     <button onclick="drawgraph(GG,AA3);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3)</button>
+     <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+     <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    </div>
     <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
    </div>
    <div id="thegraph"></div>
@@ -90,6 +94,14 @@
   }
   function disablebutton(id){
    document.getElementById(id).setAttribute("disabled","disabled");
+  }
+  function enablebuttons(classname){
+   var B = document.getElementsByClassName(classname);
+   for (var i=0;i<B.length;i++) B[i].removeAttribute("disabled");
+  }
+  function disablebuttons(classname){
+   var B = document.getElementsByClassName(classname);
+   for (var i=0;i<B.length;i++) B[i].setAttribute("disabled","disabled");
   }
   function getspeed(){
    return Number(document.getElementById("speed").value);
@@ -211,6 +223,13 @@
 //  A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?msg(A3.label(s)+': okay'):msg(s+' fails')));
   A3.get_addresses_with_local_actions().map(s=>(A3.test_local_action_at_address(s)?'':msg(A3.label(s)+' fails')));
 
+  var A5 = new Automorphism('rotationautomorphism');
+  A5.valency = 3;
+  A5.set_reference_address([]);
+  A5.set_reference_destination([]);
+  A5.add_local_action([],[2,0,1]);
+  A5.set_constant_local_action();
+
 
  /*
     A graph to work with
@@ -253,6 +272,13 @@
  AA2.set_reference_destination([1]);
  AA2.add_local_action([],[0,1,2,3,4,5,6]); // trivial LA
  AA2.set_constant_local_action();
+
+ var AA3 = new Automorphism('rotationautomorphism');
+ AA3.valency = 7;
+ AA3.set_reference_address([]);
+ AA3.set_reference_destination([]);
+ AA3.add_local_action([],[6,0,1,2,3,4,5]);
+ AA3.set_constant_local_action();
 
  </script>
  </body>

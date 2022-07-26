@@ -42,6 +42,7 @@ function drawgraph(G,A,noderadius=0.25){
 
   // colour the SVG nodes
   G.vertices.map(s=>colour_vertex_wheel(G,s.svg_id()));
+//  G.vertices.map(s=>colour_vertex_squareLR(G,s.svg_id()));
 
  });
 }
@@ -241,6 +242,23 @@ function colour_vertex_wheel(G,id){
  var H = angle_between_points(origin,point);
  var S = scaled_distance_between_points(origin,point);
  var V = S; // this makes things more vivid
+ var colour = hsv_to_rgb(H,S,V);
+ document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+}
+
+function colour_vertex_squareLR(G,id){
+ // set the fill colour of the SVG node according to the node's location:
+ // set the colour from left to right (nodes at the same x-coord have the same
+ // colour); convert this to RGB and set the SVG object's 'fill' property
+ var origin = get_vertex_position(G.svg_vertex_ids['Ø']);
+ var point = get_vertex_position(id);
+// var colour_range = [-180.0, 180.0]; // full range
+ var colour_range = [-60.0, 30.0]; // blue to orange
+ var sign = 1.0;
+ if (origin[0]>point[0]) sign = -1.0;
+ var H = (colour_range[1]-colour_range[0])*sign*scaled_distance_between_points([origin[0],0],[point[0],0])+colour_range[0];
+ var S = scaled_distance_between_points(origin,point);
+ var V = S; // this makes things more vivid (using V=H is... interesting)
  var colour = hsv_to_rgb(H,S,V);
  document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
 }

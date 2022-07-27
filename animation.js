@@ -1,12 +1,29 @@
-function quickviz(G,noderadius=0.25){
+function quickviz(G,A,noderadius=0.25){
+ // set the graph header information
  var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width='+noderadius+' label=""]\n edge [color="#cccccc"]\n';
  G.edges.map(s => output+=' '+s.from.label()+'--'+s.to.label()+'\n');
+
+ // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism
+ if (noderadius<0){
+  noderadius = -noderadius;
+  output += '\n';
+  // loop over each vertex and see how far it moves
+  for (var i=0;i<G.vertices.length;i++){
+   var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A));
+   var vertex_radius = noderadius; // default size
+   if (dist<5) vertex_radius *= (5-dist); // scale by distance, for dists of 0,1,2,3,4
+   output += ' '+G.vertices[i].label()+' [width = '+String(vertex_radius)+']\n';
+  }
+  output += '\n';
+ }
+
+ // finish the graph and return
  output += '}\n';
  return output;
 }
 
-function drawgraph(G,A,noderadius=0.25){
- var data = quickviz(G,noderadius);
+function drawgraph(G,A,noderadius=-0.25){
+ var data = quickviz(G,A,noderadius);
  var useformat = 'svg';
 // var useengine = 'neato';
  var useengine = 'twopi';
@@ -261,4 +278,20 @@ function colour_vertex_squareLR(G,id){
  var V = S; // this makes things more vivid (using V=H is... interesting)
  var colour = hsv_to_rgb(H,S,V);
  document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+}
+
+function distance_between_addresses(address1,address2){
+ // remove common prefix:
+ if (address1.length>0 && address2.length>0){
+  while (address1[0]==address2[0]){
+   address1=address1.slice(1);
+   address2=address2.slice(1);
+   if (address1.length==0 | address2.length==0){
+    break;
+   }
+  }
+ }
+ // the count what path length is left
+ var dist = address1.length+address2.length;
+ return dist;
 }

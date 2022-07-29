@@ -1,6 +1,6 @@
 function quickviz(G,A,noderadius=0.25){
  // set the graph header information
- var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width='+noderadius+' label=""]\n edge [color="#cccccc"]\n';
+ var output = 'graph{\n node [shape=circle fixedsize=true color=none style=filled fillcolor="#000000" width='+noderadius+' label=""]\n edge [color="#444444"]\n';
  G.edges.map(s => output+=' '+s.from.label()+'--'+s.to.label()+'\n');
 
  // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism

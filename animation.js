@@ -7,7 +7,7 @@ function quickviz(G,A,noderadius=0.25){
  if (noderadius<0){
   noderadius = -noderadius;
   output += '\n';
-  // loop over each vertex and see how far it moves
+  // loop over each vertex and see how far it moves, and set the SVG node size accordingly
   for (var i=0;i<G.vertices.length;i++){
    var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A));
    var vertex_radius = noderadius; // default size
@@ -282,6 +282,9 @@ function colour_vertex_squareLR(G,id){
 }
 
 function distance_between_addresses(address1,address2){
+ if (address1==undefined || address2==undefined){
+  return undefined;
+ }
  // remove common prefix:
  if (address1.length>0 && address2.length>0){
   while (address1[0]==address2[0]){

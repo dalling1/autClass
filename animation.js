@@ -43,6 +43,7 @@ function drawgraph(G,A,noderadius=-0.25){
    }
   }
   msg('Drawing graph "'+G.name+'": found '+Object.keys(G.svg_vertex_ids).length+' SVG nodes');
+  msg('Applying automorphism "'+A.name+'": '+A.automorphism_type()+' type');
 
   // remove the spurious background polygon
   document.getElementById("thegraph").querySelector("polygon").remove();

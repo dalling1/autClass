@@ -492,6 +492,37 @@ class Automorphism {
   return addresses.every(s=>(s.toString()==addresses[0].toString()||s==undefined));
  }
 
+ automorphism_type(){
+  // determine whether this automorphism is rotational, translational or a reflection
+  // procedure:
+  //  1. take an address and find its image
+  //  2. move along the path between them and test what happens to the image of the steps
+  var v = this.get_addresses_with_destinations()[0];
+  if (v){
+   // get the destination and path between
+   var w = this.address_destinations[v];
+   var p = path_from_to(v,w);
+   var plabels = p.map(s=>this.label(s));
+
+   // work through the path, testing as we go
+   for (var i=0;i<p.length;i++){
+    v = p[i];
+    w = this.address_destinations[v];
+
+    var vlabel = this.label(v);
+    var wlabel = this.label(w);
+
+    if (vlabel==wlabel) return 'rotation';
+    if (plabels.indexOf(wlabel) == -1) return 'translation';
+    if (plabels.indexOf(wlabel) < plabels.indexOf(vlabel)) return 'reflection';
+   }
+  } else {
+   // no addresses have destinations (probably the automorphism hasn't been defined yet)
+   return 'unknown';
+  }
+
+ }
+
 }
 
 

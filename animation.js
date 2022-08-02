@@ -5,13 +5,14 @@ function quickviz(G,A,noderadius=0.25){
 
  // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism
  if (noderadius<0){
+  var maxScaleDist = 5;
   noderadius = -noderadius;
   output += '\n';
   // loop over each vertex and see how far it moves, and set the SVG node size accordingly
   for (var i=0;i<G.vertices.length;i++){
    var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A));
    var vertex_radius = noderadius; // default size
-   if (dist<5) vertex_radius *= (5-dist); // scale by distance, for dists of 0,1,2,3,4
+   if (dist<maxScaleDist) vertex_radius *= (maxScaleDist-dist); // scale by distance, for dists of 0,1,2,...maxScaleDist
    output += ' '+G.vertices[i].label()+' [width = '+String(vertex_radius)+']\n';
   }
   output += '\n';

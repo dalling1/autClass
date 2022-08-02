@@ -59,9 +59,9 @@
      <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
     </div>
     <div id="GGbuttons">
-     <button onclick="drawgraph(GG,AA,0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA)</button>
-     <button onclick="drawgraph(GG,AA2,0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2)</button>
-     <button onclick="drawgraph(GG,AA3,0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3)</button>
+     <button onclick="drawgraph(GG,AA,-0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA)</button>
+     <button onclick="drawgraph(GG,AA2,-0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2)</button>
+     <button onclick="drawgraph(GG,AA3,-0.12);enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3)</button>
      <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
      <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
     </div>

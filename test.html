@@ -65,6 +65,11 @@
      <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
      <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
     </div>
+    <div id="GGGbuttons">
+     <button onclick="drawgraph(GGG,AAA,-0.12);enablebutton('runGGG');disablebuttons('animateGbuttons')">GGG.aut(AAA)</button>
+     <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');enablebutton('backGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+     <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');enablebutton('runGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+    </div>
     <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
    </div>
    <div id="thegraph"></div>
@@ -73,6 +78,7 @@
 
  <script src="class.js"></script>
  <script src="animation.js"></script>
+ <script src="drawing.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/@hpcc-js/wasm@1.5.2/dist/index.min.js"></script>
  <script>var hpccWasm = window["@hpcc-js/wasm"];</script>
 
@@ -279,6 +285,22 @@
  AA3.set_reference_destination([]);
  AA3.add_local_action([],[6,0,1,2,3,4,5]);
  AA3.set_constant_local_action();
+
+ /* another, small, graph for testing new drawing functions */
+ var GGG = new Graph('smallgraph');
+ GGG.add_regular_tree(5,3); // valency 5 depth 3
+
+ var AAA = new Automorphism('rotationautomorphism');
+ AAA.valency = 5;
+ AAA.set_reference_address([]);
+ AAA.set_reference_destination([1]);
+ AAA.add_local_action([],[2,1,3,4,0]);
+ AAA.set_constant_local_action();
+
+ // compute the edge-focused positions of the vertices of GGG, with the first edge as the focus
+ // (and using the width of the graph-drawing div)
+ var W = Math.round(document.getElementById('thegraph').getBoundingClientRect().width);
+ positions_vertex_focused(GGG,GGG.edges[0],W);
 
  </script>
  </body>

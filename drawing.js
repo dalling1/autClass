@@ -11,7 +11,7 @@ function positions_edge_focused(G){
  return 0;
 }
 
-function positions_vertex_focused(G,focus=null,width=null){
+function positions_edge_focused(G,focus=null,width=null){
  // function to calculate the position of vertices in graph G, based on an edge-focused layout;
  // the default focus edge is []--[0], and the positions are stored in the graph's vertex elements
 
@@ -48,8 +48,9 @@ function positions_vertex_focused(G,focus=null,width=null){
 // var focus_edge_length = width = 40;
 // focus.from.focusposition = [-0.5*focus_edge_length, 0]; // left of centre
 // focus.to.focusposition = [0.5*focus_edge_length, 0];    // right of centre
- focus.from.focusposition = [-20, 0]; // left of centre
- focus.to.focusposition = [20, 0];    // right of centre
+ var focus_edge_length = 40;
+ focus.from.focusposition = [-0.5*focus_edge_length, 0]; // left of centre
+ focus.to.focusposition = [0.5*focus_edge_length, 0];    // right of centre
 
  // for each node, check which end of the focus edge it is closest to, and position it accordingly,
  // using the spacedSectorLocation function with restricted angle, to make two sides

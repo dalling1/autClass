@@ -1,8 +1,3 @@
-function draw_graph(G){
- // function to create an SVG object for a graph; node positions are taken from the graph's vertices' properties
- return 0;
-}
-
 function positions_axis_focused(G){
  return 0;
 }
@@ -11,20 +6,17 @@ function positions_edge_focused(G){
  return 0;
 }
 
-function positions_edge_focused(G,focus=null,width=null){
+function positions_edge_focused(G,focus,width,height){
  // function to calculate the position of vertices in graph G, based on an edge-focused layout;
  // the default focus edge is []--[0], and the positions are stored in the graph's vertex elements
 
  // modified from https://github.com/dalling1/SVGraph
 
- // default size
-  if (width==null){
-   width = window.innerWidth;
-  }
-
- // reset all newpositions
+ // reset all focuspositions
  G.vertices.map(s=>s.focusposition=undefined);
 
+ // define the centre of the positions
+ var centre = [0.5*width, 0.5*height];
 /*
     // 0. balance the tree so that the layout is symmetrical
     this.graph.balanceTree();
@@ -39,18 +31,13 @@ function positions_edge_focused(G,focus=null,width=null){
     //    ie. similarly to the vertex-focused layout, but with a restricted range of angles
     // Nb. if needed, we could approximate the degree of the tree by the maximum degree of any node connected to the focus node
 
- // use a default focus edge, if one was not given
- if (focus==null){
-  focus = G.edges[0];
- }
-
  // put the focus edge at the centre:
 // var focus_edge_length = width = 40;
 // focus.from.focusposition = [-0.5*focus_edge_length, 0]; // left of centre
 // focus.to.focusposition = [0.5*focus_edge_length, 0];    // right of centre
  var focus_edge_length = 40;
- focus.from.focusposition = [-0.5*focus_edge_length, 0]; // left of centre
- focus.to.focusposition = [0.5*focus_edge_length, 0];    // right of centre
+ focus.from.focusposition = [centre[0] - 0.5*focus_edge_length, centre[1]]; // left of centre
+ focus.to.focusposition = [centre[0] + 0.5*focus_edge_length, centre[1]];   // right of centre
 
  // for each node, check which end of the focus edge it is closest to, and position it accordingly,
  // using the spacedSectorLocation function with restricted angle, to make two sides
@@ -61,7 +48,8 @@ function positions_edge_focused(G,focus=null,width=null){
 
  var dmaxFrom = Math.max(...distance_focus_from);
  var dmaxTo = Math.max(...distance_focus_to);
- var dmax = Math.max(dmaxFrom,dmaxTo) - 1;
+//xxx var dmax = Math.max(dmaxFrom,dmaxTo) - 1; // -1 makes the graph a little bigger
+ var dmax = Math.max(dmaxFrom,dmaxTo);
 
  // set up the range of angles on each side of the focus edge
  var angleMin = 0.5;
@@ -71,7 +59,7 @@ function positions_edge_focused(G,focus=null,width=null){
  // loop over the distances moving away from the focus edge
  for (var r=1;r<=dmax;r++){
   // scaling is the scale of the location radius (distance from the centre) for nodes at distance r
-  var scaling = (r+0.5)/dmax; // make it a little bigger than just r/dmax, to fit in the focus edge...
+  var scaling = (r-0.1)/dmax; // shrink the outmost points a little bit, to create a small buffer (margin)
 
   // PART 1: nodes closer to the "from" end of the focus edge:
   // find the indices of nodes at distance r from the focus edge's "from" node AND distance greater than r from the "to" node
@@ -80,7 +68,7 @@ function positions_edge_focused(G,focus=null,width=null){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (from_side_vertices_distance_r[i].label() != focus.from.label()){
-    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,width);
+    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin,angleMax,width);
    }
   }
 
@@ -91,7 +79,7 @@ function positions_edge_focused(G,focus=null,width=null){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (to_side_vertices_distance_r[i].label() != focus.to.label()){
-    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin,angleMax,width);
+    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,width);
    }
   }
 
@@ -106,6 +94,9 @@ function positions_edge_focused(G,focus=null,width=null){
   }
  }
 */
+
+ // copy the focus position to position
+ G.vertices.map(s=>s.position = s.focusposition);
 
  return 0;
 }
@@ -129,4 +120,91 @@ function circleLocation(centre,radius,angle){
  var x = Math.round(centre[0] + radius*Math.sin(angle));
  var y = Math.round(centre[1] + radius*Math.cos(angle));
  return [x,y];
+}
+
+function draw_svg_graph(G,A,appendToId){
+ // look at the vertices of graph G and create SVG vertices and edges using
+ // the vertices' "focusposition" attribute, and append it to the page
+ // if the "appendToId" parameter is set
+
+ var parent = document.getElementById(appendToId);
+ var W = Math.round(parent.getBoundingClientRect().width);
+ var H = Math.round(parent.getBoundingClientRect().height);
+ positions_edge_focused(G,G.edges[0],W,H);
+
+ var W = Math.round(Math.min(parent.getBoundingClientRect().width,parent.getBoundingClientRect().height));
+
+ // check that the focus positions are defined
+ for (var i=0;i<G.vertices.length;i++){
+  if (G.vertices[i].focusposition == undefined){
+   return false;
+  }
+ }
+
+ /*
+  1. create new SVG object, with two groups inside (for edges and vertices)
+  2. add edges as SVG lines
+  3. add vertices as SVG circles
+ */
+ var svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+ var graph = document.createElementNS("http://www.w3.org/2000/svg","g");
+ var edges = document.createElementNS("http://www.w3.org/2000/svg","g");
+ var vertices = document.createElementNS("http://www.w3.org/2000/svg","g");
+
+ svg.setAttribute("width","100%");
+ svg.setAttribute("height","100%");
+ graph.setAttribute("width","100%");
+ graph.setAttribute("height","100%");
+
+ graph.setAttribute("id","graph0");
+ graph.classList.add("graph");
+ edges.setAttribute("id","edges0");
+ vertices.setAttribute("id","vertices0");
+
+ graph.appendChild(edges);
+ graph.appendChild(vertices);
+ svg.appendChild(graph);
+
+ for (var i=0;i<G.edges.length;i++){
+  var edge = document.createElementNS("http://www.w3.org/2000/svg","line");
+  var edgefrom = G.edges[i].from;
+  var edgeto = G.edges[i].to;
+  edge.setAttribute("stroke","#f44");
+  edge.setAttribute("stroke-width","1");
+  edge.setAttribute("x1",edgefrom.focusposition[0]);
+  edge.setAttribute("y1",edgefrom.focusposition[1]);
+  edge.setAttribute("x2",edgeto.focusposition[0]);
+  edge.setAttribute("y2",edgeto.focusposition[1]);
+  edges.appendChild(edge);
+ }
+ for (var i=0;i<G.vertices.length;i++){
+  var vertex = document.createElementNS("http://www.w3.org/2000/svg","circle");
+//  vertex.classList.add("svgvertex");
+  vertex.setAttribute("fill","#fff");
+  vertex.setAttribute("stroke","none");
+  vertex.setAttribute("r","5");
+  vertex.setAttribute("title",G.vertices[i].label());
+  vertex.setAttribute("cx",G.vertices[i].focusposition[0]);
+  vertex.setAttribute("cy",G.vertices[i].focusposition[1]);
+  vertex.setAttribute("id","node"+i);
+  vertices.appendChild(vertex);
+  // add the vertex's SVG id to the graph's index
+  G.svg_vertex_ids[G.vertices[i].label()] = vertex.id;
+ }
+
+ // append the graph to the page, after clearing out any other graphs
+ var old_svg = parent.querySelector("svg");
+ if (old_svg) old_svg.remove();
+ parent.append(svg);
+
+ // colour the SVG nodes
+ G.vertices.map(s=>colour_vertex_wheel(G,s.svg_id()));
+// G.vertices.map(s=>colour_vertex_squareLR(G,s.svg_id()));
+
+ // store the transformed positions, if an automorphism is provided
+ if (A!=undefined){
+  G.vertices.map(s => s.newposition = get_vertex_position(G.svg_vertex_ids[A.label(s.apply_automorphism(A),G)]));
+ }
+
+ return 0;
 }

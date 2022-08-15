@@ -23,7 +23,7 @@ function quickviz(G,A,noderadius=0.25){
  return output;
 }
 
-function drawgraph(G,A,noderadius=-0.25){
+function draw_graphvis_graph(G,A,noderadius=-0.25){
  var data = quickviz(G,A,noderadius);
  var useformat = 'svg';
 // var useengine = 'neato';
@@ -67,20 +67,22 @@ function drawgraph(G,A,noderadius=-0.25){
 }
 
 function animate_automorphism(G,A){
- drawgraph(G);
-
- // find the transformed addresses, and store their positions
- // (this is a bit convoluted, because of where the label() methods lie, but it will suffice)
-//xxx G.vertices.map(s => s.position=get_vertex_position(s.svg_id()));
-// A.label(s.apply_automorphism(A),G)
+ draw_graphvis_graph(G);
 }
 
 function get_vertex_position(id){
  var el = document.getElementById(id);
  if (el){
-  // children[1] is the ellipse object:
-  var x = Number(el.children[1].getAttribute('cx'));
-  var y = Number(el.children[1].getAttribute('cy'));
+  if (el.childElementCount){
+   // GraphViz version (node is a group, containing an ellipse etc.)
+   // children[1] is the ellipse object:
+   var x = Number(el.children[1].getAttribute('cx'));
+   var y = Number(el.children[1].getAttribute('cy'));
+  } else {
+   // focus-model version (node is a circle)
+   var x = Number(el.getAttribute('cx'));
+   var y = Number(el.getAttribute('cy'));
+  }
   return [x,y];
  } else {
   return [undefined,undefined];
@@ -88,9 +90,17 @@ function get_vertex_position(id){
 }
 
 function move_vertex(id,x,y){
- // children[1] is the ellipse object:
- var vertex = document.getElementById(id).children[1].setAttribute('cx',Number(x));
- var vertex = document.getElementById(id).children[1].setAttribute('cy',Number(y));
+ var el = document.getElementById(id);
+ if (el.childElementCount){
+  // GraphViz version (node is a group, containing an ellipse etc.)
+  // children[1] is the ellipse object:
+  var vertex = el.children[1].setAttribute('cx',Number(x));
+  var vertex = el.children[1].setAttribute('cy',Number(y));
+ } else {
+  // focus-model version (node is a circle)
+  var vertex = el.setAttribute('cx',Number(x));
+  var vertex = el.setAttribute('cy',Number(y));
+ }
 }
 
 function offset_vertex(id,relative_x,relative_y){
@@ -194,7 +204,7 @@ function animate_move_vertex(id,newpos,speed=0.5){
  if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
   // don't run the animation for nodes with nowhere to go
   // set the colour to 'invisible'
-  document.getElementById(id).children[1].setAttribute('fill','rgba(0,0,0,0)');
+//  document.getElementById(id).children[1].setAttribute('fill','rgba(0,0,0,0)');
   return undefined;
  }
 
@@ -262,7 +272,12 @@ function colour_vertex_wheel(G,id){
  var S = scaled_distance_between_points(origin,point);
  var V = S; // this makes things more vivid
  var colour = hsv_to_rgb(H,S,V);
- document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+ var el = document.getElementById(id);
+ if (el.childElementCount){
+  el.children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+ } else {
+  el.setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+ }
 }
 
 function colour_vertex_squareLR(G,id){

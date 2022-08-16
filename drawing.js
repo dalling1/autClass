@@ -15,6 +15,9 @@ function positions_edge_focused(G,focus,width,height){
  // reset all focuspositions
  G.vertices.map(s=>s.focusposition=undefined);
 
+ // how big will the graph be?
+ var graphWidth = Math.min(width,height);
+
  // define the centre of the positions
  var centre = [0.5*width, 0.5*height];
 /*
@@ -68,7 +71,7 @@ function positions_edge_focused(G,focus,width,height){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (from_side_vertices_distance_r[i].label() != focus.from.label()){
-    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin,angleMax,width);
+    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin,angleMax,graphWidth);
    }
   }
 
@@ -79,7 +82,8 @@ function positions_edge_focused(G,focus,width,height){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (to_side_vertices_distance_r[i].label() != focus.to.label()){
-    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,width);
+//    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,graphWidth);
+    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,2*angleOffset-angleMin,2*angleOffset-angleMax,graphWidth);
    }
   }
 
@@ -122,7 +126,7 @@ function circleLocation(centre,radius,angle){
  return [x,y];
 }
 
-function draw_svg_graph(G,A,appendToId){
+function draw_svg_graph(G,focusStyle,A,appendToId){
  // look at the vertices of graph G and create SVG vertices and edges using
  // the vertices' "focusposition" attribute, and append it to the page
  // if the "appendToId" parameter is set
@@ -130,7 +134,15 @@ function draw_svg_graph(G,A,appendToId){
  var parent = document.getElementById(appendToId);
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
- positions_edge_focused(G,G.edges[0],W,H);
+
+ switch (focusStyle){
+  case 'edge':    positions_edge_focused(G,G.edges[3],W,H); break;
+  case 'vertex':  console.log('not implemented');positions_edge_focused(G,G.edges[3],W,H); break;
+  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[3],W,H); break;
+  default:        positions_edge_focused(G,G.edges[3],W,H); break;
+ }
+
+ // set the positions using the edge-focused layout:
 
  var W = Math.round(Math.min(parent.getBoundingClientRect().width,parent.getBoundingClientRect().height));
 

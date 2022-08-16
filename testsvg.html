@@ -1,86 +1,86 @@
 <!DOCTYPE html>
  <head>
   <meta charset=UTF-8>
-  <title>Test page</title>
+  <title>Test page (SVG)</title>
   <style>
    html,body{
     padding:0;
     margin:0;
    }
-   #wrapper{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    min-height: 100vh;
-   }
-   .inner{
-    border: 1px solid #f55;
-    height: calc(100vh - 2px);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-grow: 0;
-    overflow: auto;
-   }
    #messages{
-    width: calc(40% - 2px);
-   }
-   #thegraphwrapper{
-    width: calc(60% - 2px);
+    position: fixed;
+    background: transparent;
+    xxxwidth: 100vw;
+    height: 80vh;
+    top: 15vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    font-size: 10px;
+    box-sizing: border-box;
    }
    #thegraph {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     padding: 0;
     background-color: #555;
    }
    #thegraph svg {
-    width: 100%;
+    width: 99%;
+    height: 99%;
+    margin: 0;
+    padding: 0;
     background-color: #555;
    }
    #graphbuttons{
-    padding: 2px;
-    position: absolute;
+    padding: 5px;
+    margin: 0;
+    position: fixed;
     width: 100%;
+    box-sizing: border-box;
    }
   </style>
  </head>
  <body>
- <div id="wrapper">
   <div id="messages" class="inner"></div>
-  <div id="thegraphwrapper" class="inner">
-   <div id="graphbuttons">
-    <div id="Gbuttons">
-     <button onclick="draw_svg_graph(G,A2,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
-     <button onclick="draw_svg_graph(G,A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
-     <button onclick="draw_svg_graph(G,A4,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4)</button>
-     <button onclick="draw_svg_graph(G,A5,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5)</button>
-     <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
-     <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    </div>
-    <div id="GGbuttons">
-     <button onclick="draw_svg_graph(GG,AA,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA)</button>
-     <button onclick="draw_svg_graph(GG,AA2,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2)</button>
-     <button onclick="draw_svg_graph(GG,AA3,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3)</button>
-     <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
-     <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    </div>
-    <div id="GGGbuttons">
-     <button onclick="draw_svg_graph(GGG,AAA,'thegraph');enablebutton('runGGG');disablebuttons('animateGbuttons')">GGG.aut(AAA)</button>
-     <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');enablebutton('backGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
-     <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');enablebutton('runGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
-    </div>
-    <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
+  <div id="graphbuttons">
+   <div><select name="layout" id="layout"><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select></div>
+   <div id="Gbuttons">
+    <button onclick="draw_svg_graph(G,getLayout(),A2,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A4,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4)</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A5,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5)</button>
+    <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
    </div>
-   <div id="thegraph"></div>
+   <div id="GGbuttons">
+    <button onclick="draw_svg_graph(GG,getLayout(),AA,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA)</button>
+    <button onclick="draw_svg_graph(GG,getLayout(),AA2,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2)</button>
+    <button onclick="draw_svg_graph(GG,getLayout(),AA3,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3)</button>
+    <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+   </div>
+   <div id="GGGbuttons">
+    <button onclick="draw_svg_graph(GGG,getLayout(),AAA,'thegraph');enablebutton('runGGG');disablebuttons('animateGbuttons')">GGG.aut(AAA)</button>
+    <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');enablebutton('backGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');enablebutton('runGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+   </div>
+   <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
   </div>
- </div>
+  <div id="thegraph"></div>
 
  <script src="class.js"></script>
  <script src="animation.js"></script>
  <script src="drawing.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/@hpcc-js/wasm@1.5.2/dist/index.min.js"></script>
  <script>var hpccWasm = window["@hpcc-js/wasm"];</script>
+
+ <script>
+  function getLayout(){
+   return document.getElementById('layout').value;
+  }
+ </script>
 
  <script>
   function clearmsg(){

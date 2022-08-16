@@ -226,6 +226,9 @@ class Automorphism {
   this.local_actions = [];
   this.constant_local_action = false;
 
+  this.automorphism_type = 'unknown';
+  this.automorphism_focus = []; // vertex or edge or axis; define an axis by the end-points (implying the path between them)
+
   this.address_destinations = [];
  }
 
@@ -512,9 +515,9 @@ class Automorphism {
     var vlabel = this.label(v);
     var wlabel = this.label(w);
 
-    if (vlabel==wlabel) return 'rotation';
-    if (plabels.indexOf(wlabel) == -1) return 'translation';
-    if (plabels.indexOf(wlabel) < plabels.indexOf(vlabel)) return 'reflection';
+    if (vlabel==wlabel) {this.automorphism_type = 'rotation'; this.automorphism_focus = vlabel; console.log('rotate about '+vlabel); return 'rotation';}
+    if (plabels.indexOf(wlabel) == -1) {this.automorphism_type = 'translation'; this.automorphism_focus = []; return 'translation';}
+    if (plabels.indexOf(wlabel) < plabels.indexOf(vlabel)) {this.automorphism_type = 'reflection'; this.automorphism_focus = vlabel+'--'+wlabel; console.log('reflect about '+vlabel+'--'+wlabel); return 'reflection';}
    }
   } else {
    // no addresses have destinations (probably the automorphism hasn't been defined yet)

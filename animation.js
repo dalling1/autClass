@@ -30,10 +30,9 @@ function draw_graphvis_graph(G,A,noderadius=-0.25){
  var useengine = 'twopi';
  hpccWasm.graphviz.layout(data, useformat, useengine).then(svg => {
   const svgdiv = document.getElementById("thegraph"); // the div where the SVG graph should be attached
-  const svgdivwrapper = document.getElementById("thegraphwrapper"); // the div where the SVG graph should be attached
   svgdiv.innerHTML = svg;
-  var scrolldistance = svgdivwrapper.scrollHeight/2 - svgdivwrapper.clientHeight/2;
-  svgdivwrapper.scroll({top:scrolldistance, behavior:'smooth'});
+  var scrolldistance = svgdiv.scrollHeight/2 - svgdiv.clientHeight/2;
+  svgdiv.scroll({top:scrolldistance, behavior:'smooth'});
 
   // find the drawn SVG nodes and store their IDs in the graph
   G.svg_vertex_ids = [];
@@ -242,7 +241,7 @@ function angle_between_points(centre,point){
 function scaled_distance_between_points(pos1,pos2){
  // find the distance between the given points in pixels and then scale by the size of the SVG object
  var svg = document.getElementsByTagName('svg')[0];
- var svgsize = 0.5*Math.max(svg.getBBox().width, svg.getBBox().height); // take max of width and height
+ var svgsize = 0.5*Math.min(svg.getBBox().width, svg.getBBox().height); // take min of width and height
  var dist = Math.sqrt(Math.pow(pos2[0]-pos1[0],2) + Math.pow(pos2[1]-pos1[1],2));
  return dist/svgsize;
 }

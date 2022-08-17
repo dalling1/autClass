@@ -51,8 +51,7 @@ function positions_edge_focused(G,focus,width,height){
 
  var dmaxFrom = Math.max(...distance_focus_from);
  var dmaxTo = Math.max(...distance_focus_to);
-//xxx var dmax = Math.max(dmaxFrom,dmaxTo) - 1; // -1 makes the graph a little bigger
- var dmax = Math.max(dmaxFrom,dmaxTo);
+ var dmax = 0.25+Math.max(dmaxFrom,dmaxTo); // add 0.25 to give a little space around the edge
 
  // set up the range of angles on each side of the focus edge
  var angleMin = 0.5;
@@ -62,7 +61,7 @@ function positions_edge_focused(G,focus,width,height){
  // loop over the distances moving away from the focus edge
  for (var r=1;r<=dmax;r++){
   // scaling is the scale of the location radius (distance from the centre) for nodes at distance r
-  var scaling = (r-0.1)/dmax; // shrink the outmost points a little bit, to create a small buffer (margin)
+  var scaling = 0.5*graphWidth*r/dmax; // 0.5 for radius, not diameter
 
   // PART 1: nodes closer to the "from" end of the focus edge:
   // find the indices of nodes at distance r from the focus edge's "from" node AND distance greater than r from the "to" node
@@ -71,7 +70,8 @@ function positions_edge_focused(G,focus,width,height){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (from_side_vertices_distance_r[i].label() != focus.from.label()){
-    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin,angleMax,graphWidth);
+//    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,graphWidth);
+    from_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.from.focusposition,scaling,N_this_distance,i,2*angleOffset-angleMin,2*angleOffset-angleMax,graphWidth); // reverse the order of the from_side nodes
    }
   }
 
@@ -82,8 +82,7 @@ function positions_edge_focused(G,focus,width,height){
   for (var i=0;i<N_this_distance;i++){
    // only position vertices which are not on the focus edge:
    if (to_side_vertices_distance_r[i].label() != focus.to.label()){
-//    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin+angleOffset,angleMax+angleOffset,graphWidth);
-    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,2*angleOffset-angleMin,2*angleOffset-angleMax,graphWidth);
+    to_side_vertices_distance_r[i].focusposition = spacedSectorLocation(focus.to.focusposition,scaling,N_this_distance,i,angleMin,angleMax,graphWidth);
    }
   }
 
@@ -104,6 +103,62 @@ function positions_edge_focused(G,focus,width,height){
 
  return 0;
 }
+
+
+function positions_vertex_focused(G,focus,width,height){
+ // modified from https://github.com/dalling1/SVGraph
+
+ // reset all focuspositions
+ G.vertices.map(s=>s.focusposition=undefined);
+
+ // how big will the graph be?
+ var graphWidth = Math.min(width,height);
+
+ // define the centre of the positions
+ var centre = [0.5*width, 0.5*height];
+
+ // 1. put the focus node at the centre,
+ // 2. compute dmax, the maximum distance of any connected node from the focus node
+ // 3. find the Nd nodes at distance d from the focus node
+ // 4. spread them around the circle with scale d/dmax
+ // Nb. if needed, we could approximate the degree of the tree by the maximum degree of any node connected to the focus node
+
+ // put the focus node at the centre
+ focus.focusposition = centre;
+
+ // store the distances from each vertex to the focus vertex
+ var distance_focus = G.vertices.map(s=>distance_between_addresses(focus.address,s.address));
+ var dmax = 0.25+Math.max(...distance_focus); // add 0.25 to give a little space around the edge
+
+ // get the valency (number of immediate neighbours of the focus vertex)
+ var valency = G.vertices.map(s=>(distance_between_addresses(s.address,focus.address)==1)?s:undefined).filter(s=>s!=undefined).length;
+
+ // loop over the distances moving away from the focus node
+ for (var r=1;r<=dmax;r++){
+  var scaling = 0.5*graphWidth*r/dmax; // 0.5 for radius, not diameter
+  var vertices_distance_r = G.vertices.map(s=>(distance_between_addresses(s.address,focus.address)==r)?s:undefined).filter(s=>s!=undefined);
+  var N_this_distance = vertices_distance_r.length;
+  for (var i=0;i<N_this_distance;i++){
+   // these nodes belong on a circle of radius scale s = r/dmax from the centre, with position angles determined by the valency, r and their "n"
+   vertices_distance_r[i].focusposition = spacedCircleLocation(focus.focusposition,scaling,valency,r,i);
+  }
+ }
+
+/*
+    // finally, place nodes which are not connected to the focus node (distance is infinity)
+    var distRnodes = this.graph.distanceMatrix[this.focus.n].map((val,indx) => val == Infinity ? indx : undefined).filter(x => x !== undefined);
+    var s = 1.1; // put detached nodes just outside the outer circle
+    for (var i=0;i<distRnodes.length;i++){
+     this.graph.nodes[distRnodes[i]].setAltLocation(   this.spacedCircleLocation(this.focus.getAltLocation(),s,valency,r+1,i)  );
+    }
+*/
+
+ // copy the focus position to position
+ G.vertices.map(s=>s.position = s.focusposition);
+
+ return 0;
+}
+
 
 function spacedSectorLocation(centre,s=1.0,Ntotal,n,angleMin=0,angleMax=2*Math.PI,width){
  // generate an incremental location on the sector centred on the page and which fits within the
@@ -126,6 +181,48 @@ function circleLocation(centre,radius,angle){
  return [x,y];
 }
 
+function spacedCircleLocation(centre,radius,valency,depth,n){
+ // Place nodes around a circle, evenly spaced; number is determined by valency and depth
+ // Return the nth of those positions
+ // if n is zero-indexed, n=0 will give the position at angle=0, otherwise n=N will be angle=2*Pi==0
+ var angleSpacing = 2*Math.PI/treeShellCount(valency,depth);
+ var angle = angleSpacing*(n+0.5);
+ return circleLocation(centre,radius,angle);
+}
+
+function spacedSectorLocation(centre,radius,Ntotal,n,angleMin=0,angleMax=2*Math.PI){
+ // Place nodes around a the boundary of a sector defined by the min and max angle, evenly spaced;
+ // the total number is given by Ntotal, and the first and last locations will be at the min and max angle, respectively
+ // (this is different to the spacedCircleLocation, where we don't want the first and last to overlap)
+ // Return the nth of those positions.
+ var angleSpacing = (angleMax-angleMin)/(Ntotal-1);
+ var angle = angleMin+angleSpacing*n;
+ return circleLocation(centre,radius,angle);
+}
+
+function treeShellCount(valency,depth){
+ if (depth==0) return 1;
+ return valency*Math.pow(valency-1,depth-1);
+}
+
+
+/*
+function spacedCircleLocation(centre,s=1.0,valency,depth,n){
+ // generate an incremental location on the circle centred on the page and which fits within the graph's border,
+ // scaled by the factor s (ie. scale the circle's diameter)
+ // ie. work out the even spacing of nodes on the required circle, and return the coordinates of the nth of those locations
+
+ var X = centre[0];
+ var Y = centre[1];
+ var W = X - this.border[0];
+ var H = Y - this.border[0];
+ var R = Math.min(W,H);
+ return spacedCircleLocation([X,Y],R*s,valency,depth,n);
+}
+*/
+
+
+
 function draw_svg_graph(G,focusStyle,A,appendToId){
  // look at the vertices of graph G and create SVG vertices and edges using
  // the vertices' "focusposition" attribute, and append it to the page
@@ -137,7 +234,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
 
  switch (focusStyle){
   case 'edge':    positions_edge_focused(G,G.edges[3],W,H); break;
-  case 'vertex':  console.log('not implemented');positions_edge_focused(G,G.edges[3],W,H); break;
+  case 'vertex':  positions_vertex_focused(G,G.vertices[0],W,H); break;
   case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[3],W,H); break;
   default:        positions_edge_focused(G,G.edges[3],W,H); break;
  }

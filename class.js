@@ -495,7 +495,7 @@ class Automorphism {
   return addresses.every(s=>(s.toString()==addresses[0].toString()||s==undefined));
  }
 
- automorphism_type(){
+ calculate_automorphism_type(){
   // determine whether this automorphism is rotational, translational or a reflection
   // procedure:
   //  1. take an address and find its image

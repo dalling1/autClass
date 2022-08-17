@@ -205,42 +205,30 @@ function treeShellCount(valency,depth){
  return valency*Math.pow(valency-1,depth-1);
 }
 
-
-/*
-function spacedCircleLocation(centre,s=1.0,valency,depth,n){
- // generate an incremental location on the circle centred on the page and which fits within the graph's border,
- // scaled by the factor s (ie. scale the circle's diameter)
- // ie. work out the even spacing of nodes on the required circle, and return the coordinates of the nth of those locations
-
- var X = centre[0];
- var Y = centre[1];
- var W = X - this.border[0];
- var H = Y - this.border[0];
- var R = Math.min(W,H);
- return spacedCircleLocation([X,Y],R*s,valency,depth,n);
-}
-*/
-
-
-
 function draw_svg_graph(G,focusStyle,A,appendToId){
  // look at the vertices of graph G and create SVG vertices and edges using
  // the vertices' "focusposition" attribute, and append it to the page
  // if the "appendToId" parameter is set
+
+ var automorphism_type = A.calculate_automorphism_type();
+ switch (automorphism_type){
+  case 'rotation':    focusStyle = 'vertex'; break;
+  case 'reflection':  focusStyle = 'edge'; break;
+  case 'translation':  focusStyle = 'axis';
+ }
 
  var parent = document.getElementById(appendToId);
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
  switch (focusStyle){
-  case 'edge':    positions_edge_focused(G,G.edges[3],W,H); break;
-  case 'vertex':  positions_vertex_focused(G,G.vertices[0],W,H); break;
-  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[3],W,H); break;
-  default:        positions_edge_focused(G,G.edges[3],W,H); break;
+  case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
+  case 'edge':    positions_edge_focused(G,A.automorphism_focus,W,H); break;
+  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[0],W,H); break;
+  default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }
 
- // set the positions using the edge-focused layout:
-
+ // find the maximum size for the graph on the page
  var W = Math.round(Math.min(parent.getBoundingClientRect().width,parent.getBoundingClientRect().height));
 
  // check that the focus positions are defined

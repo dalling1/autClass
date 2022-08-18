@@ -24,13 +24,7 @@ class Vertex {
  }
 
  label(){
-  // label the vertex according to the 'label alphabet' of its graph, indexed by the entries in the
-  // vertex's address; special case: address is the empty array: set the label to \u{d8} (ie. 'Ø')
-  const ROOT_VERTEX_LABEL = "\u{d8}";
-  if (this.address != undefined){
-   var thelabel = this.address.map(t=>this.graph.alphabet[t]).join("");
-   return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
-  }
+  return this.graph.label_address(this.address);
  }
 
  apply_automorphism(A){
@@ -196,9 +190,19 @@ class Graph {
   return this.vertices.map(s=>s.address);
  }
 
+ label_address(address){
+  // label the vertex according to the 'label alphabet' of its graph, indexed by the entries in the
+  // vertex's address; special case: address is the empty array: set the label to \u{d8} (ie. 'Ø')
+  const ROOT_VERTEX_LABEL = "\u{d8}";
+  if (address != undefined){
+   var thelabel = address.map(t=>this.alphabet[t]).join("");
+   return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
+  }
+ }
+
  find_vertex_with_address(address){
   if (address==undefined) return undefined;
-  return this.vertices[this.vertices.map(s=>s.toString()).indexOf(address.toString())]; // can't label a raw address, use toString() instead
+  return this.vertices[this.vertices.map(s=>s.label()).indexOf(this.label_address(address))];
  }
 
 }

@@ -51,6 +51,7 @@
     <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
     <button onclick="draw_svg_graph(G,getLayout(),A4,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4)</button>
     <button onclick="draw_svg_graph(G,getLayout(),A5,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5)</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A6,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A6)</button>
     <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
     <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
    </div>
@@ -235,6 +236,13 @@
   A5.set_reference_destination([]);
   A5.add_local_action([],[2,0,1]);
   A5.set_constant_local_action();
+
+  var A6 = new Automorphism('rotationautomorphism');
+  A6.valency = 3;
+  A6.set_reference_address([0,1,2]);
+  A6.set_reference_destination([0,1,2]);
+  A6.add_local_action([0,1,2],[2,0,1]);
+  A6.set_constant_local_action();
 
 
  /*

@@ -58,6 +58,11 @@ class Edge {
   this.is_directed = false;
  }
 
+ label(){
+  return this.graph.label_address(this.from.address) + "--" + this.graph.label_address(this.to.address);
+ }
+
+
 }
 
 // graph class

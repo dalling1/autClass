@@ -216,6 +216,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   case 'reflection':  focusStyle = 'edge'; break;
   case 'translation':  focusStyle = 'axis';
  }
+ msg("Automorphism type: "+automorphism_type+" // focusStyle = "+focusStyle);
 
  var parent = document.getElementById(appendToId);
  var W = Math.round(parent.getBoundingClientRect().width);
@@ -223,7 +224,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
 
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
-  case 'edge':    positions_edge_focused(G,A.automorphism_focus,W,H); break;
+  case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
   case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[0],W,H); break;
   default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }

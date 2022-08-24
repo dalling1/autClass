@@ -210,10 +210,22 @@ class Graph {
   return this.vertices[this.vertices.map(s=>s.label()).indexOf(this.label_address(address))];
  }
 
- find_edge_with_addresses(address1,address2){
+ find_edge_with_addresses(address1,address2=undefined){
+  // single input? is it a pair of addresses?
+  if (address1.length==2 && address2==undefined){
+   address2 = address1[1];
+   address1 = address1[0];
+  }
   if (address1==undefined || address2==undefined) return undefined;
   var search_label = this.label_address(address1) + "--" + this.label_address(address2);
-  return this.edges[this.edges.map(s=>s.label()).indexOf(search_label)];
+  var search_result = this.edges[this.edges.map(s=>s.label()).indexOf(search_label)];
+  if (search_result==undefined){
+   // not found, try reversing the order (undirected edges)
+   var search_label = this.label_address(address2) + "--" + this.label_address(address1);
+   return this.edges[this.edges.map(s=>s.label()).indexOf(search_label)];
+  } else {
+   return search_result;
+  }
  }
 
 }

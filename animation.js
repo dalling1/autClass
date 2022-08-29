@@ -295,22 +295,3 @@ function colour_vertex_squareLR(G,id){
  var colour = hsv_to_rgb(H,S,V);
  document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
 }
-
-function distance_between_addresses(address1,address2){
- if (address1==undefined || address2==undefined){
-  return undefined;
- }
- // remove common prefix:
- if (address1.length>0 && address2.length>0){
-  while (address1[0]==address2[0]){
-   address1=address1.slice(1);
-   address2=address2.slice(1);
-   if (address1.length==0 | address2.length==0){
-    break;
-   }
-  }
- }
- // the count what path length is left
- var dist = address1.length+address2.length;
- return dist;
-}

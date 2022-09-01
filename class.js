@@ -178,6 +178,30 @@ class Graph {
   }
  }
 
+ add_axis_tree(valency,axis_vertices,depth){    //,width,margin){
+  // axis_vertices is a list of addresses
+
+  // add the on-axis vertices first
+  for (var i=0;i<axis_vertices.length;i++){
+   var v = axis_vertices[i]
+//x   console.log(' * adding on-axis vertex with label '+label_address(v))
+   this.add_vertex('',v);
+   // add edge between the on-axis vertices
+   if (i>0) this.add_edge('',axis_vertices[i-1],axis_vertices[i]);
+  }
+
+  // now add the children of the on-axis vertices
+  for (var i=0;i<axis_vertices.length;i++){
+   var v = axis_vertices[i];
+   var Nskip = 0;
+   if (i==0 || i==(axis_vertices.length-1)){
+    Nskip = 1; // skip one neighbour of the first and last vertices on the axis
+   }
+
+   // add neighbours (and their neighbours, recursively) to the graph, starting from v, to max distance depth from v:
+   add_neighbours(v,this,depth,v,valency,Nskip);
+  }
+ }
 
  print_all_labels(){
   this.vertices.map(v=>console.log(v.label()));
@@ -767,4 +791,45 @@ function distance_between_addresses(address1,address2){
  // the count what path length is left
  var dist = address1.length+address2.length;
  return dist;
+}
+
+
+function label_address(address,graph=null){
+ if (graph==null){
+  // create a blank graph so that we can use the default alphabet
+  var graph = new Graph();
+ }
+ const ROOT_VERTEX_LABEL = "\u{d8}";
+ if (address != undefined){
+  address = simplify_address(address);
+  var thelabel = address.map(t=>graph.alphabet[t]).join("");
+  return (thelabel.length==0?ROOT_VERTEX_LABEL:thelabel);
+ }
+}
+
+function add_neighbours(address,G,max_depth,from_address,valency,Nskip=0){
+ var neighbours = get_neighbours_of_address(address,valency);
+ var Nskipped = 0;
+ for (var i=0;i<neighbours.length;i++){
+  var v = neighbours[i];
+  if (G.find_vertex_with_address(v)==undefined){ // not in the graph already
+   if (distance_between_addresses(from_address,v)<=max_depth){ // close enough to add
+    if (Nskipped>=Nskip){ // no need to skip -- really add it now
+     G.add_vertex('',v);
+//     console.log(' * adding vertex with '+label_address(v)+' (distance from '+label_address(from_address)+' is '+distance_between_addresses(from_address,v)+')')
+     G.add_edge('',address,v);
+     add_neighbours(v,G,max_depth,from_address,valency); // recursive step
+    } else {
+     Nskipped += 1;
+//     console.log(' ** skipping Nskipped = '+Nskipped);
+    }
+   } else {
+    // neighbour is too far, so stop
+    console.log(' * tried to add '+label_address(v)+' but it is too far from '+label_address(from_address));
+   }
+  } else {
+   // this address is already in the graph, so stop
+//   console.log(' * vertex '+label_address(v)+' is already in the graph');
+  }
+ }
 }

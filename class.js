@@ -810,26 +810,29 @@ function label_address(address,graph=null){
 function add_neighbours(address,G,max_depth,from_address,valency,Nskip=0){
  var neighbours = get_neighbours_of_address(address,valency);
  var Nskipped = 0;
+ var debug = false;
+ max_depth = Math.min(max_depth,20); // hard limit of 20
+
  for (var i=0;i<neighbours.length;i++){
   var v = neighbours[i];
   if (G.find_vertex_with_address(v)==undefined){ // not in the graph already
    if (distance_between_addresses(from_address,v)<=max_depth){ // close enough to add
     if (Nskipped>=Nskip){ // no need to skip -- really add it now
+     if (debug) console.log(' * adding vertex with '+label_address(v)+' (distance from '+label_address(from_address)+' is '+distance_between_addresses(from_address,v)+')')
      G.add_vertex('',v);
-//     console.log(' * adding vertex with '+label_address(v)+' (distance from '+label_address(from_address)+' is '+distance_between_addresses(from_address,v)+')')
      G.add_edge('',address,v);
      add_neighbours(v,G,max_depth,from_address,valency); // recursive step
     } else {
+     if (debug) console.log(' ** skipping Nskipped = '+Nskipped);
      Nskipped += 1;
-//     console.log(' ** skipping Nskipped = '+Nskipped);
     }
    } else {
     // neighbour is too far, so stop
-    console.log(' * tried to add '+label_address(v)+' but it is too far from '+label_address(from_address));
+    if (debug) console.log(' * tried to add '+label_address(v)+' but it is too far from '+label_address(from_address));
    }
   } else {
    // this address is already in the graph, so stop
-//   console.log(' * vertex '+label_address(v)+' is already in the graph');
+   if (debug) console.log(' * vertex '+label_address(v)+' is already in the graph');
   }
  }
 }

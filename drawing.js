@@ -54,7 +54,7 @@ function positions_axis_focused(G,focus,width,height){
     if (w){ // ie. this neighbour exists in G
 //x     console.log(label_address(axis_path[i])+" neighbour "+label_address(neighbours[j])+" is not on the axis and exists");
      k += 1;
-     w.focusposition = [xrange[0]+k*deltax , yspacing];
+     w.focusposition = [xrange[0]+k*deltax , v.focusposition[1]+yspacing];
      var w_xrange = [xrange[0]+(k-0.5)*deltax, xrange[0]+(k+0.5)*deltax]; // zzz
 //x     var xrange = [v.focusposition[0] - xspacing, v.focusposition[0] + xspacing];
      place_vertex_neighbours_below_axis(G,w,valency,w_xrange,yspacing); // place every vertex in this branch

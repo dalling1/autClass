@@ -47,7 +47,7 @@ function positions_axis_focused(G,focus,width,height){
 
 //x  console.log('XXXX '+v.label()+' xrange: '+xrange[0]+', '+xrange[1]+'; deltax = '+deltax);
 
-  var k = 0; // extant sibling count (we only need to do this on the first level below the axis, because of the removed/missing neighbours of the on-axis vertices)
+  var k = 0; // extant sibling count
   for (var j=0;j<neighbours.length;j++){
    if (axis_neighbours[j]==-1){ // ie. not on the axis
     var w = G.find_vertex_with_address(neighbours[j]);
@@ -76,14 +76,16 @@ function place_vertex_neighbours_below_axis(G,v,valency,xrange,yspacing){
  var neighbours = get_neighbours_of_address(v.address,valency);
 //x console.log('  placing '+v.label()+' ('+neighbours.length+' neighbours)');
  var deltax = (xrange[1]-xrange[0])/(neighbours.length - 1 + 1); // -1 for parent, +1 to set columns apart spatially
+ var k = 0; // extant sibling count
  for (var i=0;i<neighbours.length;i++){
   w = G.find_vertex_with_address(neighbours[i]);
   if (w){
    if (w.focusposition == undefined){
-    var wx = xrange[0] + deltax*(i+1);
+    k += 1;
+    var wx = xrange[0] + k*deltax;
     var wy = v.focusposition[1]+yspacing;
-    var w_xrange = [wx - 0.5*deltax, wx + 0.5*deltax];
     w.focusposition = [wx, wy];
+    var w_xrange = [wx + (k-0.5)*deltax, wx + (k+0.5)*deltax];
     place_vertex_neighbours_below_axis(G,w,valency,w_xrange,yspacing); // recursive step
    } else {
     // vertex already has focusposition, nothing to do

@@ -314,9 +314,12 @@
 // make_svg_from_focus_positions(GGG,"thecanvas");
 
  // working on axis-focused positioning:
- var P = new Graph(); P.add_axis_tree(3,path_from_to([],[0,1]),2);
- positions_axis_focused(P,[[],[0,1]],1200,1000);
+ var Pvalency = 4;
+ var P = new Graph();
+ P.add_axis_tree(Pvalency,path_from_to([],[0,1]),2);
+ positions_axis_focused(P,[[],[0,1]],600,1000);
  P.vertices.map(s=>console.log(s.label()+" at "+s.focusposition[0]+", "+s.focusposition[1]));
+ draw_svg_graph(P,getLayout(),A3,'thegraph');
 
  </script>
  </body>

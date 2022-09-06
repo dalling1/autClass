@@ -183,11 +183,10 @@ class Graph {
 
   // add the on-axis vertices first
   for (var i=0;i<axis_vertices.length;i++){
-   var v = axis_vertices[i]
-//x   console.log(' * adding on-axis vertex with label '+label_address(v))
+   var v = axis_vertices[i];
    this.add_vertex('',v);
    // add edge between the on-axis vertices
-   if (i>0) this.add_edge('',axis_vertices[i-1],axis_vertices[i]);
+   if (i>0) this.add_edge('',this.find_vertex_with_address(axis_vertices[i-1]),this.find_vertex_with_address(axis_vertices[i]));
   }
 
   // now add the children of the on-axis vertices
@@ -814,14 +813,14 @@ function add_neighbours(address,G,max_depth,from_address,valency,Nskip=0){
  max_depth = Math.min(max_depth,20); // hard limit of 20
 
  for (var i=0;i<neighbours.length;i++){
-  var v = neighbours[i];
-  if (G.find_vertex_with_address(v)==undefined){ // not in the graph already
-   if (distance_between_addresses(from_address,v)<=max_depth){ // close enough to add
+  var vaddress = neighbours[i];
+  if (G.find_vertex_with_address(vaddress)==undefined){ // not in the graph already
+   if (distance_between_addresses(from_address,vaddress)<=max_depth){ // close enough to add
     if (Nskipped>=Nskip){ // no need to skip -- really add it now
      if (debug) console.log(' * adding vertex with '+label_address(v)+' (distance from '+label_address(from_address)+' is '+distance_between_addresses(from_address,v)+')')
-     G.add_vertex('',v);
-     G.add_edge('',address,v);
-     add_neighbours(v,G,max_depth,from_address,valency); // recursive step
+     var v = G.add_vertex('',vaddress);
+     var e = G.add_edge('',G.find_vertex_with_address(address),v);
+     add_neighbours(vaddress,G,max_depth,from_address,valency); // recursive step
     } else {
      if (debug) console.log(' ** skipping Nskipped = '+Nskipped);
      Nskipped += 1;

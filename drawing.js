@@ -1,10 +1,104 @@
-function positions_axis_focused(G){
+function positions_axis_focused(G,focus,width,height){
+ // function to calculate the position of vertices in graph G, based on an axis-focused layout;
+ // the focus parameter should be a pair of addresses: the path between them will be the focus axis
+
+ var yspacing = 150; // for now (50 pixels between levels)
+ var xspacing = 25; // for now (parent position +/- 25 pixels)
+
+ var valency = 1 + Math.max(...G.vertices.map(s=>s.address).join().split(',').map(s=>Number(s)));
+
+ // reset all focuspositions
+ G.vertices.map(s=>s.focusposition=undefined);
+
+ // focus path (the axis)
+ var axis_start = focus[0];
+ var axis_end = focus[focus.length-1]; // do it this way so that a path can be passed in as a parameter
+ var axis_path = path_from_to(axis_start,axis_end);
+
+ // layout parameters
+ var Ncolumns = axis_path.length;
+ var column_width = Math.ceil(width/Ncolumns); // also the overall width of the branch below an on-axis vertex
+ var column_margin = 10; // separate the branches a bit
+// var column_width = Math.max(axis_separation-2*column_margin, 1); // column space actually occupied by branch vertices; at least 1 pixel
+
+ for (var i=0;i<axis_path.length;i++){
+  // position the on-axis vertices (on the y=0 line, evenly distributed)
+//  G.find_vertex_with_address(axis_path[i]).focusposition = [ width/(Ncolumns-1)*i + 0.5*column_width , 0];
+  G.find_vertex_with_address(axis_path[i]).focusposition = [ (i+0.5)*column_width , 0];
+ }
+
+//xxx
+ // for each on-axis vertex:
+ //  1. get the neighbours
+ //  2. for each neighbour, find the ones that
+ //       i. are *not* on the axis already (ie. not in axis_path), and
+ //      ii. exist in G
+ //  3. count these neighbours and place them below the vertex, spread out evenly over the available space
+ //     - available space = column width - margin
+ for (var i=0;i<axis_path.length;i++){
+  var neighbours = get_neighbours_of_address(axis_path[i],valency);
+  var axis_neighbours = neighbours.map(t=>label_address(t)).map(s=>axis_path.map(r=>label_address(r)).indexOf(s));
+  var v = G.find_vertex_with_address(axis_path[i]); // the "parent" vertex (on-axis)
+
+  // position vertices in the first level below the axis:
+  var xrange = [v.focusposition[0] - 0.5*column_width, v.focusposition[0] + 0.5*column_width]; // include margins here if desired
+  var Nsiblings = valency - 2; // number of "hanging" neighbours of the on-axis vertices
+  var deltax = (xrange[1] - xrange[0])/(Nsiblings+1); // spacing on the first level
+
+//x  console.log('XXXX '+v.label()+' xrange: '+xrange[0]+', '+xrange[1]+'; deltax = '+deltax);
+
+  var k = 0; // extant sibling count (we only need to do this on the first level below the axis, because of the removed/missing neighbours of the on-axis vertices)
+  for (var j=0;j<neighbours.length;j++){
+   if (axis_neighbours[j]==-1){ // ie. not on the axis
+    var w = G.find_vertex_with_address(neighbours[j]);
+    if (w){ // ie. this neighbour exists in G
+//x     console.log(label_address(axis_path[i])+" neighbour "+label_address(neighbours[j])+" is not on the axis and exists");
+     k += 1;
+     w.focusposition = [xrange[0]+k*deltax , yspacing];
+     var w_xrange = [xrange[0]+(k-0.5)*deltax, xrange[0]+(k+0.5)*deltax]; // zzz
+//x     var xrange = [v.focusposition[0] - xspacing, v.focusposition[0] + xspacing];
+     place_vertex_neighbours_below_axis(G,w,valency,w_xrange,yspacing); // place every vertex in this branch
+
+    }
+   }
+  }
+
+ }
+//x console.log("----------------- column_width = "+column_width);
  return 0;
 }
 
-function positions_edge_focused(G){
+
+function place_vertex_neighbours_below_axis(G,v,valency,xrange,yspacing){
+ // for vertex v in graph G, find its unplaced neighbours and position them;
+ // v is a Vertex object, so use v.address where appropriate
+//x console.log(v.label()+" xrange = ["+xrange[0]+", "+xrange[1]+"]");
+ var neighbours = get_neighbours_of_address(v.address,valency);
+//x console.log('  placing '+v.label()+' ('+neighbours.length+' neighbours)');
+ var deltax = (xrange[1]-xrange[0])/(neighbours.length - 1 + 1); // -1 for parent, +1 to set columns apart spatially
+ for (var i=0;i<neighbours.length;i++){
+  w = G.find_vertex_with_address(neighbours[i]);
+  if (w){
+   if (w.focusposition == undefined){
+    var wx = xrange[0] + deltax*(i+1);
+    var wy = v.focusposition[1]+yspacing;
+    var w_xrange = [wx - 0.5*deltax, wx + 0.5*deltax];
+    w.focusposition = [wx, wy];
+    place_vertex_neighbours_below_axis(G,w,valency,w_xrange,yspacing); // recursive step
+   } else {
+    // vertex already has focusposition, nothing to do
+   }
+  } else {
+   // this neighbour is not in G, nothing to do
+//x   console.log('   does not exist');
+  }
+ }
  return 0;
 }
+
+
+
+
 
 function positions_edge_focused(G,focus,width,height){
  // function to calculate the position of vertices in graph G, based on an edge-focused layout;
@@ -225,7 +319,8 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
   case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
-  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[0],W,H); break;
+//  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[0],W,H); break;
+  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break;
   default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }
 

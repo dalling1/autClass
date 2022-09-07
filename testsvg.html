@@ -67,6 +67,11 @@
     <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');enablebutton('backGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
     <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');enablebutton('runGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
    </div>
+   <div id="PPbuttons">
+    <button onclick="draw_svg_graph(PP,getLayout(),AA,'thegraph');enablebutton('runPP');disablebuttons('animateGbuttons')">PP.aut(AA)</button>
+    <button id="runPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('runPP');enablebutton('backPP');PP.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,getspeed()))">Run</button>
+    <button id="backPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('backPP');enablebutton('runPP');PP.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,getspeed()))">Back</button>
+   </div>
    <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
   </div>
   <div id="thegraph"></div>
@@ -314,12 +319,12 @@
 // make_svg_from_focus_positions(GGG,"thecanvas");
 
  // working on axis-focused positioning:
- var Pvalency = 4;
- var P = new Graph();
- P.add_axis_tree(Pvalency,path_from_to([],[0,1]),2);
- positions_axis_focused(P,[[],[0,1]],600,1000);
- P.vertices.map(s=>console.log(s.label()+" at "+s.focusposition[0]+", "+s.focusposition[1]));
-// draw_svg_graph(P,getLayout(),A3,'thegraph');
+ var PPvalency = AA.valency;
+ var PP = new Graph();
+ PP.add_axis_tree(PPvalency,path_from_to([1,0],[0,1]),2);
+ positions_axis_focused(PP,[[1,0],[0,1]],600,1000);
+// PP.vertices.map(s=>console.log(s.label()+" at "+s.focusposition[0]+", "+s.focusposition[1]));
+// draw_svg_graph(PP,getLayout(),A3,'thegraph');
 
  </script>
  </body>

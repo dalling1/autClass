@@ -320,7 +320,8 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
   case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
-  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
+//  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
+  case 'axis':    positions_axis_focused(G,[[1,0],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
   default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }
 

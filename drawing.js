@@ -19,15 +19,12 @@ function positions_axis_focused(G,focus,width,height){
  var Ncolumns = axis_path.length;
  var column_width = Math.ceil(width/Ncolumns); // also the overall width of the branch below an on-axis vertex
  var column_margin = 10; // separate the branches a bit
-// var column_width = Math.max(axis_separation-2*column_margin, 1); // column space actually occupied by branch vertices; at least 1 pixel
 
  for (var i=0;i<axis_path.length;i++){
   // position the on-axis vertices (on the y=0 line, evenly distributed)
-//  G.find_vertex_with_address(axis_path[i]).focusposition = [ width/(Ncolumns-1)*i + 0.5*column_width , 0];
   G.find_vertex_with_address(axis_path[i]).focusposition = [ (i+0.5)*column_width , 0];
  }
 
-//xxx
  // for each on-axis vertex:
  //  1. get the neighbours
  //  2. for each neighbour, find the ones that
@@ -45,18 +42,14 @@ function positions_axis_focused(G,focus,width,height){
   var Nsiblings = valency - 2; // number of "hanging" neighbours of the on-axis vertices
   var deltax = (xrange[1] - xrange[0])/(Nsiblings+1); // spacing on the first level
 
-//x  console.log('XXXX '+v.label()+' xrange: '+xrange[0]+', '+xrange[1]+'; deltax = '+deltax);
-
   var k = 0; // extant sibling count
   for (var j=0;j<neighbours.length;j++){
    if (axis_neighbours[j]==-1){ // ie. not on the axis
     var w = G.find_vertex_with_address(neighbours[j]);
     if (w){ // ie. this neighbour exists in G
-//x     console.log(label_address(axis_path[i])+" neighbour "+label_address(neighbours[j])+" is not on the axis and exists");
      k += 1;
      w.focusposition = [xrange[0]+k*deltax , v.focusposition[1]+yspacing];
      var w_xrange = [xrange[0]+(k-0.5)*deltax, xrange[0]+(k+0.5)*deltax]; // zzz
-//x     var xrange = [v.focusposition[0] - xspacing, v.focusposition[0] + xspacing];
      place_vertex_neighbours_below_axis(G,w,valency,w_xrange,yspacing); // place every vertex in this branch
 
     }
@@ -64,7 +57,10 @@ function positions_axis_focused(G,focus,width,height){
   }
 
  }
-//x console.log("----------------- column_width = "+column_width);
+
+ // copy the focus position to position
+ G.vertices.map(s=>s.position = s.focusposition);
+
  return 0;
 }
 
@@ -306,23 +302,25 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  // the vertices' "focusposition" attribute, and append it to the page
  // if the "appendToId" parameter is set
 
- var automorphism_type = A.calculate_automorphism_type();
- switch (automorphism_type){
-  case 'rotation':    focusStyle = 'vertex'; break;
-  case 'reflection':  focusStyle = 'edge'; break;
-  case 'translation':  focusStyle = 'axis';
- }
- msg("Automorphism type: "+automorphism_type+" // focusStyle = "+focusStyle);
-
  var parent = document.getElementById(appendToId);
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
+ var automorphism_type = A.calculate_automorphism_type();
+ if (focusStyle == 'auto'){
+  switch (automorphism_type){
+   case 'rotation':    focusStyle = 'vertex'; break;
+   case 'reflection':  focusStyle = 'edge'; break;
+   case 'translation':  focusStyle = 'axis';
+  }
+  msg("Automorphism type: "+automorphism_type+" // focusStyle = "+focusStyle);
+ }
+
+ msg('focusStyle = '+focusStyle);
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
   case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
-//  case 'axis':    console.log('not implemented');positions_edge_focused(G,G.edges[0],W,H); break;
-  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break;
+  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
   default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }
 

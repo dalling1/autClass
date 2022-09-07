@@ -45,7 +45,7 @@
  <body>
   <div id="messages" class="inner"></div>
   <div id="graphbuttons">
-   <div><select name="layout" id="layout"><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select></div>
+   <div><select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select></div>
    <div id="Gbuttons">
     <button onclick="draw_svg_graph(G,getLayout(),A2,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
     <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>
@@ -319,7 +319,7 @@
  P.add_axis_tree(Pvalency,path_from_to([],[0,1]),2);
  positions_axis_focused(P,[[],[0,1]],600,1000);
  P.vertices.map(s=>console.log(s.label()+" at "+s.focusposition[0]+", "+s.focusposition[1]));
- draw_svg_graph(P,getLayout(),A3,'thegraph');
+// draw_svg_graph(P,getLayout(),A3,'thegraph');
 
  </script>
  </body>

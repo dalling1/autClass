@@ -368,7 +368,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   var edge = document.createElementNS("http://www.w3.org/2000/svg","line");
   var edgefrom = G.edges[i].from;
   var edgeto = G.edges[i].to;
-  edge.setAttribute("stroke","#f44");
+  edge.setAttribute("stroke","#444444"); // was f44
   edge.setAttribute("stroke-width","1");
   edge.setAttribute("x1",edgefrom.focusposition[0]);
   edge.setAttribute("y1",edgefrom.focusposition[1]);
@@ -376,12 +376,30 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   edge.setAttribute("y2",edgeto.focusposition[1]);
   edges.appendChild(edge);
  }
+
+ var noderadius = -5; // default SVG node size; negative means scale inversely proportionally to distance moved under the automorphism
+//x var minScaleDist = 3; // vertices which moved less than (or equal) this get the same size (largest SVG nodes)
+ var maxScaleDist = 5; // vertices which moved more than (or equal) this get the same size (smallest SVG nodes)
+ var graphMaxDist = 0; // keep track of the largest distance moved
+
  for (var i=0;i<G.vertices.length;i++){
   var vertex = document.createElementNS("http://www.w3.org/2000/svg","circle");
+
+  // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism
+  if (noderadius<0){
+   var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A)); // xxx
+   graphMaxDist = Math.max(graphMaxDist,dist);
+   var vertex_radius = -noderadius; // default size
+   if (dist<maxScaleDist) vertex_radius *= (maxScaleDist-dist); // scale by distance, for dists of 0,1,2,...maxScaleDist
+//x   console.log('Vertex '+G.vertices[i].label()+' moves to '+label_address(G.vertices[i].apply_automorphism(A))+', a distance of '+dist+' (set radius '+vertex_radius+')');
+  } else {
+   var vertex_radius = -noderadius;
+  }
+
 //  vertex.classList.add("svgvertex");
   vertex.setAttribute("fill","#fff");
   vertex.setAttribute("stroke","none");
-  vertex.setAttribute("r","5");
+  vertex.setAttribute("r",vertex_radius);
   vertex.setAttribute("title",G.vertices[i].label());
   vertex.setAttribute("cx",G.vertices[i].focusposition[0]);
   vertex.setAttribute("cy",G.vertices[i].focusposition[1]);
@@ -390,6 +408,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   // add the vertex's SVG id to the graph's index
   G.svg_vertex_ids[G.vertices[i].label()] = vertex.id;
  }
+ console.log('Maximum distance moved by a vertex: '+graphMaxDist);
 
  // append the graph to the page, after clearing out any other graphs
  var old_svg = parent.querySelector("svg");

@@ -5,6 +5,11 @@ function positions_axis_focused(G,focus,width,height){
  var yspacing = 150; // for now (50 pixels between levels)
  var xspacing = 25; // for now (parent position +/- 25 pixels)
 
+ // add some margins
+ var topmargin = yspacing;
+ var sidemargin = 100;
+
+ // work out the valency
  var valency = 1 + Math.max(...G.vertices.map(s=>s.address).join().split(',').map(s=>Number(s)));
 
  // reset all focuspositions
@@ -17,12 +22,12 @@ function positions_axis_focused(G,focus,width,height){
 
  // layout parameters
  var Ncolumns = axis_path.length;
- var column_width = Math.ceil(width/Ncolumns); // also the overall width of the branch below an on-axis vertex
+ var column_width = Math.ceil((width-2*sidemargin)/Ncolumns); // also the overall width of the branch below an on-axis vertex
  var column_margin = 10; // separate the branches a bit
 
  for (var i=0;i<axis_path.length;i++){
   // position the on-axis vertices (on the y=0 line, evenly distributed)
-  G.find_vertex_with_address(axis_path[i]).focusposition = [ (i+0.5)*column_width , 0];
+  G.find_vertex_with_address(axis_path[i]).focusposition = [ sidemargin + (i+0.5)*column_width , topmargin];
  }
 
  // for each on-axis vertex:
@@ -306,17 +311,17 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
- var automorphism_type = A.calculate_automorphism_type();
+ msg('selected focusStyle = '+focusStyle);
  if (focusStyle == 'auto'){
+  var automorphism_type = A.calculate_automorphism_type();
   switch (automorphism_type){
    case 'rotation':    focusStyle = 'vertex'; break;
    case 'reflection':  focusStyle = 'edge'; break;
    case 'translation':  focusStyle = 'axis';
   }
-  msg("Automorphism type: "+automorphism_type+" // focusStyle = "+focusStyle);
+  msg("Automorphism type: "+automorphism_type+" ... using focusStyle = "+focusStyle);
  }
 
- msg('focusStyle = '+focusStyle);
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
   case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;

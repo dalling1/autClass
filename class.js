@@ -566,6 +566,7 @@ class Automorphism {
    for (var i=0;i<p.length;i++){
     v = p[i];
     w = this.address_destinations[v];
+    if (w==undefined) w = this.destination_of_address(v)
 
     var vlabel = this.label(v);
     var wlabel = this.label(w);

@@ -210,10 +210,12 @@ function animate_move_vertex(id,newpos,speed=0.5){
   if (debug) console.log('[2] No destination for node '+id+', skipping animation; making node invisible');
   var thisnode = document.getElementById(id);
   if (thisnode.childElementCount>0){
-   thisnode.children[1].setAttribute('fill','rgba(0,0,0,0)');
+//   thisnode.children[1].setAttribute('fill','rgba(0,0,0,0)'); // SVG way
+   thisnode.children[1].style.fill = 'rgb(0,0,0,0)'; // CSS way
   } else {
    // "SVG" node (from draw_svg_graph())
-   thisnode.setAttribute('fill','rgba(0,0,0,0)');
+//   thisnode.setAttribute('fill','rgba(0,0,0,0)'); // SVG way
+   thisnode.style.fill = 'rgba(0,0,0,0)'; // CSS way
   }
   return undefined;
  }
@@ -284,9 +286,13 @@ function colour_vertex_wheel(G,id){
  var colour = hsv_to_rgb(H,S,V);
  var el = document.getElementById(id);
  if (el.childElementCount){
-  el.children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+//  el.children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
+  el.children[1].style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
+console.log('aaa');
  } else {
-  el.setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+//  el.setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
+  el.style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
+console.log('bbb');
  }
 }
 

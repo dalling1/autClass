@@ -397,7 +397,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   }
 
 //  vertex.classList.add("svgvertex");
-  vertex.setAttribute("fill","#fff");
+//  vertex.setAttribute("fill","#fff");
   vertex.setAttribute("stroke","none");
   vertex.setAttribute("r",vertex_radius);
   vertex.setAttribute("title",G.vertices[i].label());

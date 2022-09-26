@@ -197,13 +197,24 @@ function animate_from_to(from,to,percent,method='default'){
 }
 
 function animate_move_vertex(id,newpos,speed=0.5){
+ var debug = false;
  // bail out if destination is not well-formed
- if (newpos==undefined || newpos.length!=2) return undefined;
+ if (newpos==undefined || newpos.length!=2){
+  if (debug) console.log('[1] No destination for node '+id+', skipping animation');
+  return undefined;
+ }
 
  if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
   // don't run the animation for nodes with nowhere to go
   // set the colour to 'invisible'
-//  document.getElementById(id).children[1].setAttribute('fill','rgba(0,0,0,0)');
+  if (debug) console.log('[2] No destination for node '+id+', skipping animation; making node invisible');
+  var thisnode = document.getElementById(id);
+  if (thisnode.childElementCount>0){
+   thisnode.children[1].setAttribute('fill','rgba(0,0,0,0)');
+  } else {
+   // "SVG" node (from draw_svg_graph())
+   thisnode.setAttribute('fill','rgba(0,0,0,0)');
+  }
   return undefined;
  }
 

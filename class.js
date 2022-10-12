@@ -178,7 +178,7 @@ class Graph {
   }
  }
 
- add_axis_tree(valency,axis_vertices,depth){    //,width,margin){
+ add_axis_tree(valency,axis_vertices,depth){
   // axis_vertices is a list of addresses
 
   // add the on-axis vertices first
@@ -270,15 +270,16 @@ class Graph {
    var axis_distances = axis_vertices.map(s=>distance_between_addresses(axis_vertices[0].address,s.address)); // distance from first vertex to the others
    var max_distance = Math.max(...axis_distances); // find the greatest distance
    var furthurest_vertex_index = axis_distances.indexOf(max_distance); // find the index of the most distant vertex (returns the first occurrence, which is fine)
-   focus_axis[0] = axis_vertices[furthurest_vertex_index]; // one end of the axis in this graph
-   if (debug) console.log("Found one end: "+focus_axis[0].label());
+   focus_axis[1] = axis_vertices[furthurest_vertex_index].address; // one end of the axis in this graph
+   // Nb. we reverse the "natural" order of the axis
+   if (debug) console.log("Found one end: "+label_address(focus_axis[1]));
 
    // we have one end, so find the furthurest vertex in the list from there:
-   var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[0].address,s.address));
+   var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[1],s.address));
    var max_distance = Math.max(...axis_distances);
    var furthurest_vertex_index = axis_distances.indexOf(max_distance);
-   focus_axis[1] = axis_vertices[furthurest_vertex_index]; // other end of the axis in this graph
-   if (debug) console.log("Found other end: "+focus_axis[1].label());
+   focus_axis[0] = axis_vertices[furthurest_vertex_index].address; // other end of the axis in this graph
+   if (debug) console.log("Found other end: "+label_address(focus_axis[0]));
 
    // set the focus property of the automorphism, and return it as well:
    A.automorphism_focus = focus_axis;
@@ -588,11 +589,13 @@ class Automorphism {
   return addresses.every(s=>(s.toString()==addresses[0].toString()||s==undefined));
  }
 
- calculate_automorphism_type(){
+ calculate_automorphism_type(G=null){
   // determine whether this automorphism is rotational, translational or a reflection
   // procedure:
   //  1. take an address and find its image
   //  2. move along the path between them and test what happens to the image of the steps
+  //
+  // For translational automorphisms, if a graph, G, is provided, use its translational axis as the focus object
   var v = this.get_addresses_with_destinations()[0];
   if (v){
    // get the destination and path between
@@ -620,6 +623,10 @@ class Automorphism {
     if (plabels.indexOf(wlabel) == -1) {
      this.automorphism_type = 'translation';
      this.automorphism_focus = [];
+     // have we got a graph to extract the axis from?
+     if (G!=null){
+      G.find_focus_axis(this);
+     }
      return 'translation';
     }
     /* reflection */

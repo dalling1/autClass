@@ -311,9 +311,9 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
- msg('selected focusStyle = '+focusStyle);
+//x msg('selected focusStyle = '+focusStyle);
  if (focusStyle == 'auto'){
-  var automorphism_type = A.calculate_automorphism_type();
+  var automorphism_type = A.calculate_automorphism_type(G); // need G if translation automorphism
   switch (automorphism_type){
    case 'rotation':    focusStyle = 'vertex'; break;
    case 'reflection':  focusStyle = 'edge'; break;
@@ -325,8 +325,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  switch (focusStyle){
   case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
   case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
-//  case 'axis':    positions_axis_focused(G,[[],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
-  case 'axis':    positions_axis_focused(G,[[1,0],[0,1]],W,H); break; // axis fixed to [[], [0,1]] for now
+  case 'axis':    if (A.automorphism_focus.length==2){positions_axis_focused(G,A.automorphism_focus,W,H);} else {positions_axis_focused(G,[[],[0,1]],W,H);} break; // default axis []->[0,1]
   default:        positions_edge_focused(G,G.edges[0],W,H); break;
  }
 

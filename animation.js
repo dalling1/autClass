@@ -288,11 +288,11 @@ function colour_vertex_wheel(G,id){
  if (el.childElementCount){
 //  el.children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
   el.children[1].style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
-console.log('aaa');
+//x console.log('aaa');
  } else {
 //  el.setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
   el.style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
-console.log('bbb');
+//x console.log('bbb');
  }
 }
 

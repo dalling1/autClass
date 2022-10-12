@@ -251,6 +251,44 @@ class Graph {
   }
  }
 
+ calculate_distances_moved(A){
+  // append a "distancemoved" property to each vertex, being the distance moved under automorphism A
+  this.vertices.map(s=>s.distancemoved = distance_between_addresses(s.address,s.apply_automorphism(A)));
+ }
+
+ find_focus_axis(A){
+  // if automorphism A is translational, find the section of the axis of translation in the current graph
+  // and set it as the automorphism_focus property of A
+  var debug = false;
+  if (A.calculate_automorphism_type()=="translation"){
+   this.calculate_distances_moved(A); // make sure the distances are set
+   var focus_axis = [];
+   var translation_distance = Math.min(...this.vertices.map(s=>s.distancemoved)); // axis vertices move this far
+   var axis_vertices = this.vertices.filter(s=>s.distancemoved==translation_distance); // collection of vertex objects
+
+   // find the furthurest vertex in the list from the first vertex:
+   var axis_distances = axis_vertices.map(s=>distance_between_addresses(axis_vertices[0].address,s.address)); // distance from first vertex to the others
+   var max_distance = Math.max(...axis_distances); // find the greatest distance
+   var furthurest_vertex_index = axis_distances.indexOf(max_distance); // find the index of the most distant vertex (returns the first occurrence, which is fine)
+   focus_axis[0] = axis_vertices[furthurest_vertex_index]; // one end of the axis in this graph
+   if (debug) console.log("Found one end: "+focus_axis[0].label());
+
+   // we have one end, so find the furthurest vertex in the list from there:
+   var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[0].address,s.address));
+   var max_distance = Math.max(...axis_distances);
+   var furthurest_vertex_index = axis_distances.indexOf(max_distance);
+   focus_axis[1] = axis_vertices[furthurest_vertex_index]; // other end of the axis in this graph
+   if (debug) console.log("Found other end: "+focus_axis[1].label());
+
+   // set the focus property of the automorphism, and return it as well:
+   A.automorphism_focus = focus_axis;
+   return focus_axis;
+
+  } else {
+   // not a translational automorphism: do nothing
+  }
+ }
+
 }
 
 

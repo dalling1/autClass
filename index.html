@@ -60,7 +60,7 @@
  <body>
   <div id="messages" class="inner"></div>
   <div id="graphbuttons">
-   <div><select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select> <label for="speed">Speed:</label><input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5"></div>
+   <div><label for="layout">Layout:</label> <select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select> <label for="speed">Speed:</label><input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5"></div>
    <div id="Gbuttons">
     <button onclick="draw_svg_graph(G,getLayout(),A2,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2)</button>
     <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3)</button>

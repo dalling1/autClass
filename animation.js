@@ -166,8 +166,6 @@ function easeOutElastic(x){  // https://easings.net
 
 function animate_from_to(from,to,percent,method='default'){
  if (from.length<2 || to.length<2) console.log("error in animate_from_to: coordinates are not (at least) two-dimensional");
- if (to[0]==undefined) to[0] = 0;
- if (to[1]==undefined) to[1] = 100000;
 
  if (method=='none'){
   var animationPosition = (percent<50.0 ? 0.0 : 1.0);
@@ -185,7 +183,7 @@ function animate_from_to(from,to,percent,method='default'){
   var animationPosition = easeOutElastic(percent/100.0);
  }
  // at 100%, set the position explicitly (to avoid round-off errors)
-// if (Math.abs(percent-100.0)<0.01){
+// if (Math.abs(percent-100.0)<0.01)
  if (percent>=100.0){
   var newx = to[0];
   var newy = to[1];
@@ -198,27 +196,8 @@ function animate_from_to(from,to,percent,method='default'){
 
 function animate_move_vertex(id,newpos,speed=0.5){
  var debug = false;
- // bail out if destination is not well-formed
- if (newpos==undefined || newpos.length!=2){
-  if (debug) console.log('[1] No destination for node '+id+', skipping animation');
-  return undefined;
- }
 
- if (newpos.length==2 && (newpos[0]==undefined || newpos[1]==undefined)){
-  // don't run the animation for nodes with nowhere to go
-  // set the colour to 'invisible'
-  if (debug) console.log('[2] No destination for node '+id+', skipping animation; making node invisible');
-  var thisnode = document.getElementById(id);
-  if (thisnode.childElementCount>0){
-//   thisnode.children[1].setAttribute('fill','rgba(0,0,0,0)'); // SVG way
-   thisnode.children[1].style.fill = 'rgb(0,0,0,0)'; // CSS way
-  } else {
-   // "SVG" node (from draw_svg_graph())
-//   thisnode.setAttribute('fill','rgba(0,0,0,0)'); // SVG way
-   thisnode.style.fill = 'rgba(0,0,0,0)'; // CSS way
-  }
-  return undefined;
- }
+ if (newpos==undefined) newpos = [undefined, undefined]; // make a vector of length 2
 
  // move the node to the requested position
  var percentage = 0.0;
@@ -234,9 +213,21 @@ function animate_move_vertex(id,newpos,speed=0.5){
  var newPosition = newpos;
 
  var thistimer = window.setInterval(function(){
-  var intermediatePosition = animate_from_to(oldPosition,newPosition,percentage,animationStyle);
-
-  move_vertex(id,intermediatePosition[0],intermediatePosition[1]);
+  // if the old position is undefined, fade the node in
+  // if the new position is undefined, fade the node out
+  // otherwise, move the node
+  if (newPosition[0]==undefined || newPosition[1]==undefined){
+   // fade out
+   document.getElementById(id).style.fill = 'rgba(0,0,0,0)'; // CSS way
+   percentage = 100.0;
+  } else if (oldPosition[0]==undefined || oldPosition[1]==undefined){
+   // fade in
+   document.getElementById(id).style.fill = 'rgba(0,0,0,255)'; // CSS way
+   percentage = 100.0;
+  } else {
+   var intermediatePosition = animate_from_to(oldPosition,newPosition,percentage,animationStyle);
+   move_vertex(id,intermediatePosition[0],intermediatePosition[1]);
+  }
 
   // perform some actions when finished:
   if (percentage>=100.0){

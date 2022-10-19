@@ -213,18 +213,13 @@ function animate_move_vertex(id,newpos,speed=0.5){
  var newPosition = newpos;
 
  var thistimer = window.setInterval(function(){
-  // if the old position is undefined, fade the node in
-  // if the new position is undefined, fade the node out
-  // otherwise, move the node
   if (newPosition[0]==undefined || newPosition[1]==undefined){
    // fade out
-   document.getElementById(id).style.fill = 'rgba(0,0,0,0)'; // CSS way
-   percentage = 100.0;
-  } else if (oldPosition[0]==undefined || oldPosition[1]==undefined){
+   document.getElementById(id).style.opacity = 1.0-percentage/100.0; // CSS way
    // fade in
-   document.getElementById(id).style.fill = 'rgba(0,0,0,255)'; // CSS way
-   percentage = 100.0;
+   document.getElementById(id).style.opacity = percentage/100.0; // CSS way
   } else {
+   // move
    var intermediatePosition = animate_from_to(oldPosition,newPosition,percentage,animationStyle);
    move_vertex(id,intermediatePosition[0],intermediatePosition[1]);
   }

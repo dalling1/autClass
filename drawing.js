@@ -311,9 +311,10 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
+ var automorphism_type = A.calculate_automorphism_type(G); // need G if translation automorphism
+
 //x msg('selected focusStyle = '+focusStyle);
  if (focusStyle == 'auto'){
-  var automorphism_type = A.calculate_automorphism_type(G); // need G if translation automorphism
   switch (automorphism_type){
    case 'rotation':    focusStyle = 'vertex'; break;
    case 'reflection':  focusStyle = 'edge'; break;

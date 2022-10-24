@@ -217,7 +217,7 @@ function animate_move_vertex(id,newpos,speed=0.5){
    // fade out
    document.getElementById(id).style.opacity = 1.0-percentage/100.0; // CSS way
    // fade in
-   document.getElementById(id).style.opacity = percentage/100.0; // CSS way
+//   document.getElementById(id).style.opacity = percentage/100.0; // CSS way
   } else {
    // move
    var intermediatePosition = animate_from_to(oldPosition,newPosition,percentage,animationStyle);

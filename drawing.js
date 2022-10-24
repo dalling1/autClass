@@ -438,8 +438,10 @@ function highlight_path(G,from,to,thickness=10,colour="#ffff99"){
   var thisedge = G.find_edge_with_addresses(path[i],path[i+1]);
   if (thisedge){ // not undefined
    var E = document.getElementById("edge"+thisedge.id);
-   E.setAttribute("stroke-width",thickness);
-   E.setAttribute("stroke",colour);
+   if (E){
+    E.setAttribute("stroke-width",thickness);
+    E.setAttribute("stroke",colour);
+   }
   }
  }
 

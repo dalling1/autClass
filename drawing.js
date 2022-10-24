@@ -373,6 +373,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   edge.setAttribute("y1",edgefrom.focusposition[1]);
   edge.setAttribute("x2",edgeto.focusposition[0]);
   edge.setAttribute("y2",edgeto.focusposition[1]);
+  edge.setAttribute("id","edge"+G.edges[i].id);
   edges.appendChild(edge);
  }
 
@@ -424,4 +425,21 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  }
 
  return 0;
+}
+
+
+function highlight_path(G,from,to,thickness=10,colour="#ffff99"){
+ // highlight a path between two nodes by making each edge in the path thicker,
+ // specified by their addresses; optionally specify the thickness and colour of
+ // the highlighted path
+ var path = path_from_to(from,to);
+ for (var i=0;i<path.length-1;i++){
+  var thisedge = G.find_edge_with_addresses(path[i],path[i+1]);
+  if (thisedge){ // not undefined
+   var E = document.getElementById("edge"+thisedge.id);
+   E.setAttribute("stroke-width",thickness);
+   E.setAttribute("stroke",colour);
+  }
+ }
+
 }

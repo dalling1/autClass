@@ -16,6 +16,7 @@ class Vertex {
   this.id = ++Vertex.number_of_vertices;
   this.graph = graph;
   this.address = address;
+  this.valency = undefined;
  }
 
  toString(){
@@ -121,6 +122,7 @@ class Graph {
 
  add_regular_tree(valency,depth){
   // usually, this should only be called on an empty graph
+  this.valency = valency;
 
   // add the origin vertex
   this.add_vertex('origin',[]); // the origin has empty address
@@ -146,6 +148,7 @@ class Graph {
 
  add_rooted_tree(valency,depth){
   // usually, this should only be called on an empty graph
+  this.valency = valency;
 
   // add the origin vertex
   var V=this.add_vertex('origin',[]); // the origin has empty address
@@ -180,6 +183,7 @@ class Graph {
 
  add_axis_tree(valency,axis_vertices,depth){
   // axis_vertices is a list of addresses
+  this.valency = valency;
 
   // add the on-axis vertices first
   for (var i=0;i<axis_vertices.length;i++){

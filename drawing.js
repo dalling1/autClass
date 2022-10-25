@@ -10,7 +10,14 @@ function positions_axis_focused(G,focus,width,height){
  var sidemargin = 100;
 
  // work out the valency
- var valency = 1 + Math.max(...G.vertices.map(s=>s.address).join().split(',').map(s=>Number(s)));
+// var valency = 1 + Math.max(...G.vertices.map(s=>s.address).join().split(',').map(s=>Number(s)));
+ // shortcut: this is now stored
+ var valency = G.valency;
+ if (valency == undefined){
+  // bail out
+  console.log('Graph valency not defined');
+  return -1;
+ }
 
  // reset all focuspositions
  G.vertices.map(s=>s.focusposition=undefined);
@@ -336,6 +343,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  // check that the focus positions are defined
  for (var i=0;i<G.vertices.length;i++){
   if (G.vertices[i].focusposition == undefined){
+   console.log('Focus positions not defined');
    return false;
   }
  }

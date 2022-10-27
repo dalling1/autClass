@@ -433,6 +433,11 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   G.vertices.map(s => s.newposition = get_vertex_position(G.svg_vertex_ids[A.label(s.apply_automorphism(A),G)]));
  }
 
+ // highlight the translation axis, if appropriate
+ if (automorphism_type=='translation'){
+  highlight_path(G,A.automorphism_focus[0],A.automorphism_focus[A.automorphism_focus.length-1]);
+ }
+
  return 0;
 }
 

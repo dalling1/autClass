@@ -120,6 +120,13 @@ class Graph {
   return E;
  }
 
+ reset(){
+  // remove all vertices and edges from the graph (ready to have new ones added)
+  this.edges = [];
+  this.vertices = [];
+  this.valency = undefined;
+ }
+
  add_regular_tree(valency,depth){
   // usually, this should only be called on an empty graph
   this.valency = valency;
@@ -274,20 +281,25 @@ class Graph {
    var axis_distances = axis_vertices.map(s=>distance_between_addresses(axis_vertices[0].address,s.address)); // distance from first vertex to the others
    var max_distance = Math.max(...axis_distances); // find the greatest distance
    var furthurest_vertex_index = axis_distances.indexOf(max_distance); // find the index of the most distant vertex (returns the first occurrence, which is fine)
-   focus_axis[1] = axis_vertices[furthurest_vertex_index].address; // one end of the axis in this graph
-   // Nb. we reverse the "natural" order of the axis
-   if (debug) console.log("Found one end: "+label_address(focus_axis[1]));
 
-   // we have one end, so find the furthurest vertex in the list from there:
-   var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[1],s.address));
-   var max_distance = Math.max(...axis_distances);
-   var furthurest_vertex_index = axis_distances.indexOf(max_distance);
-   focus_axis[0] = axis_vertices[furthurest_vertex_index].address; // other end of the axis in this graph
-   if (debug) console.log("Found other end: "+label_address(focus_axis[0]));
+   if (furthurest_vertex_index>-1){ // ie. a max distance was found
+    focus_axis[1] = axis_vertices[furthurest_vertex_index].address; // one end of the axis in this graph
+    // Nb. we reverse the "natural" order of the axis
+    if (debug) console.log("Found one end: "+label_address(focus_axis[1]));
 
-   // set the focus property of the automorphism, and return it as well:
-   A.automorphism_focus = focus_axis;
-   return focus_axis;
+    // we have one end, so find the furthurest vertex in the list from there:
+    var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[1],s.address));
+    var max_distance = Math.max(...axis_distances);
+    var furthurest_vertex_index = axis_distances.indexOf(max_distance);
+    focus_axis[0] = axis_vertices[furthurest_vertex_index].address; // other end of the axis in this graph
+    if (debug) console.log("Found other end: "+label_address(focus_axis[0]));
+
+    // set the focus property of the automorphism, and return it as well:
+    A.automorphism_focus = focus_axis;
+    return focus_axis;
+   } else {
+    // max distance not defined: probably there are no vertices in the graph
+   }
 
   } else {
    // not a translational automorphism: do nothing

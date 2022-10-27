@@ -80,9 +80,7 @@ function positions_axis_focused(G,focus,width,height){
 function place_vertex_neighbours_below_axis(G,v,valency,xrange,yspacing){
  // for vertex v in graph G, find its unplaced neighbours and position them;
  // v is a Vertex object, so use v.address where appropriate
-//x console.log(v.label()+" xrange = ["+xrange[0]+", "+xrange[1]+"]");
  var neighbours = get_neighbours_of_address(v.address,valency);
-//x console.log('  placing '+v.label()+' ('+neighbours.length+' neighbours)');
  var deltax = (xrange[1]-xrange[0])/(neighbours.length - 1 + 1); // -1 for parent, +1 to set columns apart spatially
  var k = 0; // extant sibling count
  for (var i=0;i<neighbours.length;i++){
@@ -100,7 +98,6 @@ function place_vertex_neighbours_below_axis(G,v,valency,xrange,yspacing){
    }
   } else {
    // this neighbour is not in G, nothing to do
-//x   console.log('   does not exist');
   }
  }
  return 0;
@@ -320,7 +317,6 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
 
  var automorphism_type = A.calculate_automorphism_type(G); // need G if translation automorphism
 
-//x msg('selected focusStyle = '+focusStyle);
  if (focusStyle == 'auto'){
   switch (automorphism_type){
    case 'rotation':    focusStyle = 'vertex'; break;
@@ -387,7 +383,6 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  }
 
  var noderadius = -5; // default SVG node size; negative means scale inversely proportionally to distance moved under the automorphism
-//x var minScaleDist = 3; // vertices which moved less than (or equal) this get the same size (largest SVG nodes)
  var maxScaleDist = 5; // vertices which moved more than (or equal) this get the same size (smallest SVG nodes)
  var graphMaxDist = 0; // keep track of the largest distance moved
 
@@ -396,11 +391,10 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
 
   // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism
   if (noderadius<0){
-   var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A)); // xxx
+   var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A));
    graphMaxDist = Math.max(graphMaxDist,dist);
    var vertex_radius = -noderadius; // default size
    if (dist<maxScaleDist) vertex_radius *= (maxScaleDist-dist); // scale by distance, for dists of 0,1,2,...maxScaleDist
-//x   console.log('Vertex '+G.vertices[i].label()+' moves to '+label_address(G.vertices[i].apply_automorphism(A))+', a distance of '+dist+' (set radius '+vertex_radius+')');
   } else {
    var vertex_radius = -noderadius;
   }

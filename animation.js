@@ -65,10 +65,6 @@ function draw_graphvis_graph(G,A,noderadius=-0.25){
  });
 }
 
-function animate_automorphism(G,A){
- draw_graphvis_graph(G);
-}
-
 function get_vertex_position(id){
  var el = document.getElementById(id);
  if (el){

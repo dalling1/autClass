@@ -1,13 +1,21 @@
+<!--
+ index.html: testsvg.html turned into a nicer homepage
+-->
+
 <!DOCTYPE html>
  <head>
   <meta charset=UTF-8>
   <title>Class-based automorphisms</title>
   <style>
-   html,body {
+   html,body{
     padding:0;
     margin:0;
    }
    #layout {
+    vertical-align: top;
+   }
+   label {
+    color: #ff5;
     vertical-align: top;
    }
    #messages{
@@ -37,20 +45,12 @@
     padding: 0;
     background-color: #555;
    }
-   #controls {
+   #graphbuttons{
     padding: 5px;
     margin: 0;
     position: fixed;
     width: 100%;
     box-sizing: border-box;
-    vertical-align: top;
-   }
-   #controls button {
-    vertical-align: top;
-   }
-   #controls label {
-    color: #ff5;
-    vertical-align: top;
    }
    circle {
     transition: fill 1s ease;
@@ -59,31 +59,34 @@
  </head>
  <body>
   <div id="messages" class="inner"></div>
-  <div id="controls">
-   <div style="margin-bottom:10px;">
-    <label for="layout">Layout:</label> <select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select>
-    <label for="speed">Speed:</label><input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5">
-    <button id="runforward" class="animateGbuttons" onclick="msg('Choose a graph and automorphism first')">Run</button>
-    <button id="runbackward" class="animateGbuttons" onclick="msg('Choose a graph and automorphism first')">Back</button>
-   </div>
+  <div id="graphbuttons">
+   <div><label for="layout">Layout:</label> <select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select> <label for="speed">Speed:</label><input type="range" id="speed" min="0.1" max="10" step="0.1" value="1.5"></div>
    <div id="Gbuttons">
-    <button onclick="draw_svg_graph(G,getLayout(),A2,'thegraph');setrunbuttons('G','A2')">G.aut(A2) [r]</button>
-    <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');setrunbuttons('G','A3')">G.aut(A3) [t]</button>
-    <button onclick="draw_svg_graph(G,getLayout(),A4,'thegraph');setrunbuttons('G','A4')">G.aut(A4) [r]</button>
-    <button onclick="draw_svg_graph(G,getLayout(),A5,'thegraph');setrunbuttons('G','A5')">G.aut(A5) [o]</button>
-    <button onclick="draw_svg_graph(G,getLayout(),A6,'thegraph');setrunbuttons('G','A6')">G.aut(A6) [o]</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A2,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A2) [r]</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A3,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A3) [t]</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A4,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4) [r]</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A5,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5) [o]</button>
+    <button onclick="draw_svg_graph(G,getLayout(),A6,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A6) [o]</button>
+    <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');var speed=getspeed();enablebutton('backG');G.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');var speed=getspeed();enablebutton('runG');G.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="GGbuttons">
-    <button onclick="draw_svg_graph(GG,getLayout(),AA,'thegraph');setrunbuttons('GG','AA')">GG.aut(AA) [t]</button>
-    <button onclick="draw_svg_graph(GG,getLayout(),AA2,'thegraph');setrunbuttons('GG','AA2')">GG.aut(AA2) [r]</button>
-    <button onclick="draw_svg_graph(GG,getLayout(),AA3,'thegraph');setrunbuttons('GG','AA3')">GG.aut(AA3) [o]</button>
+    <button onclick="draw_svg_graph(GG,getLayout(),AA,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA) [t]</button>
+    <button onclick="draw_svg_graph(GG,getLayout(),AA2,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2) [r]</button>
+    <button onclick="draw_svg_graph(GG,getLayout(),AA3,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3) [o]</button>
+    <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');var speed=getspeed();enablebutton('backGG');GG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');var speed=getspeed();enablebutton('runGG');GG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="GGGbuttons">
-    <button onclick="draw_svg_graph(GGG,getLayout(),AAA,'thegraph');setrunbuttons('GGG','AAA')">GGG.aut(AAA) [r]</button>
+    <button onclick="draw_svg_graph(GGG,getLayout(),AAA,'thegraph');enablebutton('runGGG');disablebuttons('animateGbuttons')">GGG.aut(AAA) [r]</button>
+    <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');var speed=getspeed();enablebutton('backGGG');GGG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');var speed=getspeed();enablebutton('runGGG');GGG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="PPbuttons">
-    <button onclick="draw_svg_graph(PP,getLayout(),AA,'thegraph');setrunbuttons('PP','AA')">PP.aut(AA) [t]</button>
-    <button onclick="draw_svg_graph(PP,getLayout(),PA3,'thegraph');setrunbuttons('PP','PA3')">PP.aut(PA3) [t]</button>
+    <button onclick="draw_svg_graph(PP,getLayout(),AA,'thegraph');enablebutton('runPP');disablebuttons('animateGbuttons')">PP.aut(AA) [t]</button>
+    <button onclick="draw_svg_graph(PP,getLayout(),PA3,'thegraph');enablebutton('runPP');disablebuttons('animateGbuttons')">PP.aut(PA3) [t]</button>
+    <button id="runPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('runPP');var speed=getspeed();enablebutton('backPP');PP.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('backPP');var speed=getspeed();enablebutton('runPP');PP.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
   </div>
   <div id="thegraph"></div>
@@ -93,13 +96,6 @@
  <script src="drawing.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/@hpcc-js/wasm@1.5.2/dist/index.min.js"></script>
  <script>var hpccWasm = window["@hpcc-js/wasm"];</script>
-
- <script>
-  function setrunbuttons(Gstr,Astr,dirstr){
-   document.getElementById('runforward').setAttribute('onclick','animate_automorphism('+Astr+','+Gstr+',"forward",getspeed());');
-   document.getElementById('runbackward').setAttribute('onclick','animate_automorphism('+Astr+','+Gstr+',"backward",getspeed());');
-  }
- </script>
 
  <script>
   function getLayout(){
@@ -146,7 +142,7 @@
   */
 
   var valency = 3;
-  var maxdepth = 4;
+  var maxdepth = 5;
 //  var maxdepth = 3;
   // construct a trivial local action for this valency
   var LA = []; for (var n=0;n<valency;n++) LA.push(n);
@@ -154,7 +150,6 @@
   var saveT = [];
 
   for (var depth=1; depth<=maxdepth; depth++){
-   var A3 = new Automorphism('aut3',valency);
    var A3 = new Automorphism('aut3',valency);
    A3.set_reference_address([]);
    A3.set_reference_destination([0]);
@@ -276,9 +271,9 @@
 //x  msg('####################################################################')
   var G = new Graph('newgraph');
   var valency = 3;
-//  var depth = 10;
-//  G.add_regular_tree(valency,9); // 3070 vertices
-  G.add_regular_tree(valency,5); // 94 vertices
+  var depth = 10;
+//  var depth = 9;
+  G.add_regular_tree(valency,depth); // 3070 vertices
 
 //  G.vertices.map(s=>A3.destination_of_address(s.address));
 
@@ -295,7 +290,7 @@
 
  /* another graph, higher valency */
  var GG = new Graph('highvalencygraph');
- GG.add_regular_tree(7,3); // valency 7 depth 3: 302 vertices
+ GG.add_regular_tree(7,4); // valency 7 depth 4
  GG.alphabet.splice(GG.alphabet.indexOf('g'),1); // remove 'g' from the edge labels...
 
  var AA = new Automorphism('valency7automorphism');
@@ -321,7 +316,7 @@
 
  /* another, small, graph for testing new drawing functions */
  var GGG = new Graph('smallgraph');
- GGG.add_regular_tree(5,3); // valency 5 depth 3: 106 vertices
+ GGG.add_regular_tree(5,3); // valency 5 depth 3
 
  var AAA = new Automorphism('rotationautomorphism_AAA');
  AAA.valency = 5;
@@ -340,9 +335,9 @@
 
 
  // working on axis-focused positioning:
- var PPvalency = AA.valency; // valency 7
+ var PPvalency = AA.valency;
  var PP = new Graph();
- PP.add_axis_tree(PPvalency,path_from_to([1,0],[0,1]),2); // 180 vertices
+ PP.add_axis_tree(PPvalency,path_from_to([1,0],[0,1]),2);
  positions_axis_focused(PP,[[1,0],[0,1]],600,1000);
 // PP.vertices.map(s=>console.log(s.label()+" at "+s.focusposition[0]+", "+s.focusposition[1]));
 // draw_svg_graph(PP,getLayout(),A3,'thegraph');

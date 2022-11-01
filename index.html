@@ -67,26 +67,26 @@
     <button onclick="draw_svg_graph(G,getLayout(),A4,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons')">G.aut(A4) [r]</button>
     <button onclick="draw_svg_graph(G,getLayout(),A5,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A5) [o]</button>
     <button onclick="draw_svg_graph(G,getLayout(),A6,'thegraph');enablebutton('runG');disablebuttons('animateGGbuttons');">G.aut(A6) [o]</button>
-    <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');var speed=getspeed();enablebutton('backG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
-    <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');var speed=getspeed();enablebutton('runG');G.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
+    <button id="runG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('runG');var speed=getspeed();enablebutton('backG');G.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backG" class="animateGbuttons" disabled="disabled" onclick="disablebutton('backG');var speed=getspeed();enablebutton('runG');G.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="GGbuttons">
     <button onclick="draw_svg_graph(GG,getLayout(),AA,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA) [t]</button>
     <button onclick="draw_svg_graph(GG,getLayout(),AA2,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA2) [r]</button>
     <button onclick="draw_svg_graph(GG,getLayout(),AA3,'thegraph');enablebutton('runGG');disablebuttons('animateGbuttons')">GG.aut(AA3) [o]</button>
-    <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');var speed=getspeed();enablebutton('backGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
-    <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');var speed=getspeed();enablebutton('runGG');GG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
+    <button id="runGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('runGG');var speed=getspeed();enablebutton('backGG');GG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backGG" class="animateGGbuttons" disabled="disabled" onclick="disablebutton('backGG');var speed=getspeed();enablebutton('runGG');GG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="GGGbuttons">
     <button onclick="draw_svg_graph(GGG,getLayout(),AAA,'thegraph');enablebutton('runGGG');disablebuttons('animateGbuttons')">GGG.aut(AAA) [r]</button>
-    <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');var speed=getspeed();enablebutton('backGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
-    <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');var speed=getspeed();enablebutton('runGGG');GGG.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
+    <button id="runGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('runGGG');var speed=getspeed();enablebutton('backGGG');GGG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backGGG" class="animateGGGbuttons" disabled="disabled" onclick="disablebutton('backGGG');var speed=getspeed();enablebutton('runGGG');GGG.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
    <div id="PPbuttons">
     <button onclick="draw_svg_graph(PP,getLayout(),AA,'thegraph');enablebutton('runPP');disablebuttons('animateGbuttons')">PP.aut(AA) [t]</button>
     <button onclick="draw_svg_graph(PP,getLayout(),PA3,'thegraph');enablebutton('runPP');disablebuttons('animateGbuttons')">PP.aut(PA3) [t]</button>
-    <button id="runPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('runPP');var speed=getspeed();enablebutton('backPP');PP.vertices.map(s=>animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
-    <button id="backPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('backPP');var speed=getspeed();enablebutton('runPP');PP.vertices.map(s=>animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
+    <button id="runPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('runPP');var speed=getspeed();enablebutton('backPP');PP.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.newposition,speed))">Run</button>
+    <button id="backPP" class="animatePPbuttons" disabled="disabled" onclick="disablebutton('backPP');var speed=getspeed();enablebutton('runPP');PP.vertices.map(s=>old_animate_move_vertex(s.svg_id(),s.position,speed))">Back</button>
    </div>
   </div>
   <div id="thegraph"></div>

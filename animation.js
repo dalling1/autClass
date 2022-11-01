@@ -160,63 +160,153 @@ function easeOutElastic(x){  // https://easings.net
   : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
 }
 
+function animationPosition(percent,method='default'){
+ // return a modified percentage (between 0 and 1), depending on the animation style;
+ // percent should be a value between 0 and 100
+ if (method=='none'){
+//  return (percent<50.0 ? 0.0 : 1.0);
+  return 1.0; // instant move
+ } else if (method=='default' || method=='linear'){
+  return (percent/100.0);
+ } else if (method=='easeInOutBack'){
+  return easeInOutBack(percent/100.0);
+ } else if (method=='easeOutBack'){
+  return easeOutBack(percent/100.0);
+ } else if (method=='easeOutQuint'){
+  return easeOutQuint(percent/100.0);
+ } else if (method=='easeInSine'){
+  return easeInSine(percent/100.0);
+ } else if (method=='easeOutElastic'){
+  return easeOutElastic(percent/100.0);
+ }
+ return 0;
+}
+
+
 function animate_from_to(from,to,percent,method='default'){
  if (from.length<2 || to.length<2) console.log("error in animate_from_to: coordinates are not (at least) two-dimensional");
-
- if (method=='none'){
-  var animationPosition = (percent<50.0 ? 0.0 : 1.0);
- } else if (method=='default' || method=='linear'){
-  var animationPosition = (percent/100.0);
- } else if (method=='easeInOutBack'){
-  var animationPosition = easeInOutBack(percent/100.0);
- } else if (method=='easeOutBack'){
-  var animationPosition = easeOutBack(percent/100.0);
- } else if (method=='easeOutQuint'){
-  var animationPosition = easeOutQuint(percent/100.0);
- } else if (method=='easeInSine'){
-  var animationPosition = easeInSine(percent/100.0);
- } else if (method=='easeOutElastic'){
-  var animationPosition = easeOutElastic(percent/100.0);
- }
+ var animPercent = animationPosition(percent,method);
  // at 100%, set the position explicitly (to avoid round-off errors)
-// if (Math.abs(percent-100.0)<0.01)
  if (percent>=100.0){
   var newx = to[0];
   var newy = to[1];
  } else {
-  var newx = from[0] + animationPosition*(to[0]-from[0]);
-  var newy = from[1] + animationPosition*(to[1]-from[1]);
+  var newx = from[0] + animPercent*(to[0]-from[0]);
+  var newy = from[1] + animPercent*(to[1]-from[1]);
  }
  return [newx, newy];
 }
 
-function animate_move_vertex(id,newpos,speed=0.5){
- var debug = false;
+function animate_automorphism(A,G,direction='forward',speed=1.0){
+ if (direction=='forward'){
+  G.vertices.map(s=>animate_move_vertex(s,path_from_to(s.address,A.destination_of_address(s.address)),speed));
+ } else if (direction=='backward'){
+  G.vertices.map(s=>animate_move_vertex(s,path_from_to(A.destination_of_address(s.address),s.address),speed));
+ } else {
+  alert('Direction of animation should be forward or backward');
+ }
+}
 
- if (newpos==undefined) newpos = [undefined, undefined]; // make a vector of length 2
+function animate_move_vertex(vertex,vertex_path,speed=0.5){
+ // move the vertex's SVG node along the given path: the path should be a list of addresses
+ // Examples:
+ //    path_from_to(G.vertices[0].address,G.vertices[12].address)  -- a series of addresses (node follows the graph edges)
+ //    [G.vertices[0].address, G.vertices[12].address] -- straight line between nodes (node cuts across the graph, ignoring edges)
+ // if any addresses do not exist in the drawn graph, the SVG nodes will be faded in and out appropriately
 
- // move the node to the requested position
- var percentage = 0.0;
+ var Nsegments = vertex_path.length-1;
+ var percentQuantum = 100.0/Nsegments; // each segment gets this much of the overall animation
 
- var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
- var animationStyle = animationsList[2];
- if (animationStyle=='none'){
-  speed = 100.0;
+ // nowhere to go? exit [so fixed nodes will not be animated at all]
+ if (Nsegments<1) return 0;
+
+ // get the (SVG) coordinates along the path
+ var G = vertex.graph;
+ var coords = [];
+ for (var i=0;i<vertex_path.length;i++){
+  var node = G.find_vertex_with_address(vertex_path[i]);
+  if (node){
+   if (node.position){
+    coords.push(node.position);
+   } else {
+    coords.push(undefined);
+   }
+  } else {
+   coords.push(undefined);
+  }
  }
 
- var oldPosition = get_vertex_position(id);
-// var newPosition = get_vertex_position(id); // find the position of the node with this vertex's new label
- var newPosition = newpos;
+ // initialise the timer variables
+ var percentage = 0.0;
+ var segment = 0;
 
+ // pick an acceleration curve for the animation
+ var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
+ var animationStyle = animationsList[2]; // use linear for now
+
+ // set a timer which controls the SVG node's opacity and position
+ var thistimer = window.setInterval(function(){
+  // which segment of the path are we on?
+  segment = Math.floor(Nsegments*percentage/100.0);
+  if (segment<=Nsegments){
+   var originalPosition = coords[segment];
+   var newPosition = coords[segment+1];
+   var segmentPercentage = 100.0*(percentage - segment*percentQuantum)/percentQuantum; // remap percentage to this piece of the path
+
+   var useopacity = 1.0;
+   if (originalPosition==undefined && newPosition==undefined){
+    // set opacity zero (CSS) #################################################
+    useopacity = 0.0;
+   } else if (originalPosition==undefined && newPosition!=undefined){
+    // fade in (CSS) ##########################################################
+    useopacity = segmentPercentage/100.0;
+   } else if (originalPosition!=undefined && newPosition==undefined){
+    // fade out (CSS) #########################################################
+    useopacity = 1.0-segmentPercentage/100.0;
+   } else {
+   // move #########################################################
+    useopacity = 1.0;
+    var intermediatePosition = animate_from_to(originalPosition,newPosition,segmentPercentage,animationStyle);
+    move_vertex(vertex.svg_id(),intermediatePosition[0],intermediatePosition[1]);
+   }
+
+   // set the opacity
+   document.getElementById(vertex.svg_id()).style.opacity = useopacity;
+  }
+
+  // perform some actions when finished:
+  if (percentage>=100.0 || segment>=Nsegments){
+   if (segment==Nsegments){
+    var newPosition = coords[coords.length-1];
+    if (newPosition) move_vertex(vertex.svg_id(),newPosition[0],newPosition[1]);
+   }
+   window.clearInterval(thistimer);
+  }
+  // increment the step
+  percentage += speed;
+
+ });
+}
+
+function old_animate_move_vertex(id,newPosition,speed=0.5){
+ if (newPosition==undefined) newPosition = [undefined, undefined]; // make a vector of length 2
+ var percentage = 0.0;
+ var originalPosition = get_vertex_position(id);
+
+ var animationsList = ['none','default','linear','easeInOutBack','easeInSine','easeOutBack','easeOutQuint','easeOutElastic'];
+ var animationStyle = animationsList[2]; // just use linear for now
+
+ // set a timer which moves the node to the requested position
  var thistimer = window.setInterval(function(){
   if (newPosition[0]==undefined || newPosition[1]==undefined){
    // fade out
-   document.getElementById(id).style.opacity = 1.0-percentage/100.0; // CSS way
+   var obj = document.getElementById(id)
+   if (obj) obj.style.opacity = 1.0-percentage/100.0; // CSS way
    // fade in
 //   document.getElementById(id).style.opacity = percentage/100.0; // CSS way
   } else {
    // move
-   var intermediatePosition = animate_from_to(oldPosition,newPosition,percentage,animationStyle);
+   var intermediatePosition = animate_from_to(originalPosition,newPosition,percentage,animationStyle);
    move_vertex(id,intermediatePosition[0],intermediatePosition[1]);
   }
 
@@ -227,6 +317,7 @@ function animate_move_vertex(id,newpos,speed=0.5){
   percentage += speed;
  });
 }
+
 
 function angle_between_points(centre,point){
  var angle_in_radians = 90.0-Math.atan2(point[1] - centre[1], point[0] - centre[0]) - Math.PI / 2;
@@ -270,11 +361,9 @@ function colour_vertex_wheel(G,id){
  if (el.childElementCount){
 //  el.children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
   el.children[1].style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
-//x console.log('aaa');
  } else {
 //  el.setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')'); // SVG way
   el.style.fill = 'rgb('+colour[0]+','+colour[1]+','+colour[2]+')'; // CSS way
-//x console.log('bbb');
  }
 }
 

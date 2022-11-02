@@ -695,6 +695,12 @@ class Forest {
 
 function path_from_to(from_address,to_address){
  // returns the addresses along a path between the given addresses (inclusive on both ends)
+
+ // return an empty path if either endpoint is undefined
+ if (from_address==undefined || to_address==undefined){
+  return [];
+ }
+
  var path = [];
  var prefix = get_common_prefix(from_address,to_address); // common prefix for both addresses
 

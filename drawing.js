@@ -390,13 +390,14 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   var vertex = document.createElementNS("http://www.w3.org/2000/svg","circle");
 
   // if noderadius is negative, calculate vertex sizes based on distance moved under the automorphism
+  var vertex_radius = noderadius;
   if (noderadius<0){
    var dist = distance_between_addresses(G.vertices[i].address,G.vertices[i].apply_automorphism(A));
-   graphMaxDist = Math.max(graphMaxDist,dist);
-   var vertex_radius = -noderadius; // default size
-   if (dist<maxScaleDist) vertex_radius *= (maxScaleDist-dist); // scale by distance, for dists of 0,1,2,...maxScaleDist
-  } else {
-   var vertex_radius = -noderadius;
+   var vertex_radius = -noderadius; // default size (used for vertices with no defined destination under A)
+   if (dist!=undefined){
+    graphMaxDist = Math.max(graphMaxDist,dist); // keep track of the longest movement by a vertex
+    if (dist<maxScaleDist) vertex_radius *= (maxScaleDist-dist); // then scale by distance, for dists of 0,1,2,...maxScaleDist
+   }
   }
 
 //  vertex.classList.add("svgvertex");

@@ -279,7 +279,7 @@ class Graph {
 
    // find the furthurest vertex in the list from the first vertex:
    var axis_distances = axis_vertices.map(s=>distance_between_addresses(axis_vertices[0].address,s.address)); // distance from first vertex to the others
-   var max_distance = Math.max(...axis_distances); // find the greatest distance
+   var max_distance = Math.max(...axis_distances.filter(Number.isFinite)); // find the greatest distance (ignore undefined/NaN/etc.)
    var furthurest_vertex_index = axis_distances.indexOf(max_distance); // find the index of the most distant vertex (returns the first occurrence, which is fine)
 
    if (furthurest_vertex_index>-1){ // ie. a max distance was found
@@ -289,7 +289,7 @@ class Graph {
 
     // we have one end, so find the furthurest vertex in the list from there:
     var axis_distances = axis_vertices.map(s=>distance_between_addresses(focus_axis[1],s.address));
-    var max_distance = Math.max(...axis_distances);
+    var max_distance = Math.max(...axis_distances.filter(Number.isFinite)); // ignore undefined/NaN/etc.
     var furthurest_vertex_index = axis_distances.indexOf(max_distance);
     focus_axis[0] = axis_vertices[furthurest_vertex_index].address; // other end of the axis in this graph
     if (debug) console.log("Found other end: "+label_address(focus_axis[0]));

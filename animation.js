@@ -197,14 +197,31 @@ function animate_from_to(from,to,percent,method='default'){
  return [newx, newy];
 }
 
-function animate_automorphism(A,G,direction='forward',speed=1.0){
- if (direction=='forward'){
-  G.vertices.map(s=>animate_move_vertex(s,path_from_to(s.address,A.destination_of_address(s.address)),speed));
- } else if (direction=='backward'){
-  G.vertices.map(s=>animate_move_vertex(s,path_from_to(A.destination_of_address(s.address),s.address),speed));
- } else {
-  alert('Direction of animation should be forward or backward');
+function animate_automorphism(A,G,direction='forward',speed=1.0,method='graph'){
+ // animates an automorphism by moving the graph's SVG nodes between their original position and the mapped position
+ // according to the automorphism;
+ // method should be 'graph' or 'direct'
+
+ // move nodes along the graph edges?
+ if (method=='graph'){
+  if (direction=='forward'){
+   G.vertices.map(s=>animate_move_vertex(s,path_from_to(s.address,A.destination_of_address(s.address)),speed));
+  } else if (direction=='backward'){
+   G.vertices.map(s=>animate_move_vertex(s,path_from_to(A.destination_of_address(s.address),s.address),speed));
+  } else {
+   alert('Direction of animation should be forward or backward');
+  }
+ // move nodes on the line joining their origin and destination
+ } else if (method=='direct'){
+  if (direction=='forward'){
+   G.vertices.map(s=>animate_move_vertex(s,[s.address,A.destination_of_address(s.address)],speed));
+  } else if (direction=='backward'){
+   G.vertices.map(s=>animate_move_vertex(s,[A.destination_of_address(s.address),s.address],speed));
+  } else {
+   alert('Direction of animation should be forward or backward');
+  }
  }
+
 }
 
 function animate_move_vertex(vertex,vertex_path,speed=0.5){

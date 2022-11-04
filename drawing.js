@@ -408,6 +408,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   vertex.setAttribute("cx",G.vertices[i].focusposition[0]);
   vertex.setAttribute("cy",G.vertices[i].focusposition[1]);
   vertex.setAttribute("id","node"+i);
+  vertex.setAttribute("onmouseenter","node_hover(this)");
   vertices.appendChild(vertex);
   // add the vertex's SVG id to the graph's index
   G.svg_vertex_ids[G.vertices[i].label()] = vertex.id;
@@ -453,4 +454,19 @@ function highlight_path(G,from,to,thickness=10,colour="#ffff99"){
   }
  }
 
+}
+
+// set hover/mouseover behaviour for nodes
+function node_hover(obj){
+ console.log('in development: '+obj.id);
+ return 0;
+
+ var doautomorphism = document.getElementById("thesvg").classList.contains("autoGraph");
+ var thisnodeid = this.id;
+ var thisnodelabel = this.querySelector(Node="title").textContent;
+ if (doautomorphism){
+  loadNodeAction(labelToAddress(thisnodelabel)); // show the node's local action in the editor
+  traceOrbitByLabel(thisnodelabel,100,true); // max orbit length 100, draw arrows true
+ }
+ return 0;
 }

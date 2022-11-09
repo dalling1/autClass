@@ -315,22 +315,82 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
  var W = Math.round(parent.getBoundingClientRect().width);
  var H = Math.round(parent.getBoundingClientRect().height);
 
+ // make sure that A.automorphism_type is set
  var automorphism_type = A.calculate_automorphism_type(G); // need G if translation automorphism
 
+ var requestedAuto = false;
  if (focusStyle == 'auto'){
+  requestedAuto = true;
   switch (automorphism_type){
-   case 'rotation':    focusStyle = 'vertex'; break;
-   case 'reflection':  focusStyle = 'edge'; break;
-   case 'translation':  focusStyle = 'axis';
+   case 'rotation':     focusStyle = 'vertex'; break;
+   case 'reflection':   focusStyle = 'edge'; break;
+   case 'translation':  focusStyle = 'axis'; break;
   }
   msg("Automorphism type: "+automorphism_type+" ... using focusStyle = "+focusStyle);
  }
 
+ /*
+   In the switch() below, we need to work out what vertex/edge/axis to use if the user requests
+   that type of focus layout but the automorphism is of a different "flavour": A.automorphism_focus
+   may not be valid for the chosen layout, and the code will break. Fixing this for the vertex layout
+   is pretty straightforward, but less so for the others...
+
+   Suggestions:
+    - vertex layout, reflection automorphism: use first endpoint of the A.automorphism_focus edge
+    - vertex layout, translation automorphism: use first vertex of the A.automorphism_focus path
+    - edge layout, rotation automorphism: use first edge containing A.automorphism_focus vertex
+    - edge layout, translation automorphism: use edge consisting of the first two vertices in the A.automorphism_focus path
+    - axis layout, rotation automorphism: ...
+    - axis layout, reflection automorphism: ...
+ */
+
+ // set the focus
+ var thefocus = undefined;
+ if (requestedAuto){
+  // use the "natural" focus for each automorphism type
+  thefocus = A.automorphism_focus; // this is an address or list of addresses
+ } else {
+  // for non-auto layouts, the focus needs to be chosen; base the choice on the automorphism type:
+  switch (A.automorphism_type){
+   case 'rotation':
+    switch (focusStyle){
+     case 'vertex':  thefocus = A.automorphism_focus; break; // "natural" choice
+     case 'edge':    // edge between focus vertex and a neighbour
+                     var neighbours = get_neighbours_of_address(A.automorphism_focus,A.valency).map(s=>G.find_vertex_with_address(s));
+                     var useneighbour = neighbours[neighbours.map(s=>s!=undefined).indexOf(true)]; // first neighbour which occurs in G
+                     thefocus = [A.automorphism_focus, useneighbour.address];
+                     break;
+     case 'axis':    // also use an edge between the focus vertex and a neighbour, for now
+                     var neighbours = get_neighbours_of_address(A.automorphism_focus,A.valency).map(s=>G.find_vertex_with_address(s));
+                     var useneighbour = neighbours[neighbours.map(s=>s!=undefined).indexOf(true)]; // first neighbour which occurs in G
+                     thefocus = [A.automorphism_focus, useneighbour.address];
+                     break;
+    }
+   break;
+   case 'reflection':
+    switch (focusStyle){
+     case 'vertex':  thefocus = A.automorphism_focus[0]; break; // use one end of the focus edge
+     case 'edge':    thefocus = A.automorphism_focus; break; // "natural" choice
+     case 'axis':    thefocus = A.automorphism_focus; break; // use the focus edge for now (could expand to an axis as wide as the graph)
+    }
+   break;
+   case 'translation':
+    var focusaxis = path_from_to(A.automorphism_focus[0],A.automorphism_focus[1]) ;
+    var midpoint = Math.floor(focusaxis.length/2-1); // midpoint of the axis of translation, or the next node if length is even
+    switch (focusStyle){
+     case 'vertex':  thefocus = focusaxis[midpoint]; break; // use the midpoint of the axis of translation
+     case 'edge':    thefocus = [focusaxis[midpoint],focusaxis[midpoint+1]]; break; // edge between midpoint of axis and the next vertex
+     case 'axis':    thefocus = A.automorphism_focus; break; // "natural" choice
+    }
+   break;
+  }
+ }
+
+ // now set the positions
  switch (focusStyle){
-  case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(A.automorphism_focus),W,H); break;
-  case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(A.automorphism_focus),W,H); break;
-  case 'axis':    if (A.automorphism_focus.length==2){positions_axis_focused(G,A.automorphism_focus,W,H);} else {positions_axis_focused(G,[[],[0,1]],W,H);} break; // default axis []->[0,1]
-  default:        positions_edge_focused(G,G.edges[0],W,H); break;
+  case 'vertex':  positions_vertex_focused(G,G.find_vertex_with_address(thefocus),W,H); break;
+  case 'edge':    positions_edge_focused(G,G.find_edge_with_addresses(thefocus),W,H); break;
+  case 'axis':    positions_axis_focused(G,thefocus,W,H);   break; // thefocus is a pair of addresses
  }
 
  // find the maximum size for the graph on the page

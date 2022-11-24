@@ -63,6 +63,9 @@ class Edge {
   return this.graph.label_address(this.from.address) + "--" + this.graph.label_address(this.to.address);
  }
 
+ svg_id(){
+  return this.graph.svg_edge_ids[this.id];
+ }
 
 }
 
@@ -90,6 +93,7 @@ class Graph {
 
   // set up a place to store information about the graph if it is drawn on the page
   this.svg_vertex_ids = [];
+  this.svg_edge_ids = [];
  }
 
 /*

@@ -432,7 +432,8 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   var edge = document.createElementNS("http://www.w3.org/2000/svg","line");
   var edgefrom = G.edges[i].from;
   var edgeto = G.edges[i].to;
-  edge.setAttribute("stroke","#444444"); // was f44
+  edge.setAttribute("stroke","#444444"); // was f44 // edge colour
+  edge.setAttribute("stroke","#ffffff"); // was f44 // edge colour
   edge.setAttribute("stroke-width","1");
   edge.setAttribute("x1",edgefrom.focusposition[0]);
   edge.setAttribute("y1",edgefrom.focusposition[1]);
@@ -440,6 +441,8 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   edge.setAttribute("y2",edgeto.focusposition[1]);
   edge.setAttribute("id","edge"+G.edges[i].id);
   edges.appendChild(edge);
+  // add the edge's SVG id to the graph's index
+  G.svg_edge_ids[G.edges[i].id] = edge.id;
  }
 
  var noderadius = -5; // default SVG node size; negative means scale inversely proportionally to distance moved under the automorphism
@@ -519,14 +522,17 @@ function highlight_path(G,from,to,thickness=10,colour="#ffff99"){
 // set hover/mouseover behaviour for nodes
 function node_hover(obj){
  console.log('in development: '+obj.id);
- return 0;
 
- var doautomorphism = document.getElementById("thesvg").classList.contains("autoGraph");
- var thisnodeid = this.id;
- var thisnodelabel = this.querySelector(Node="title").textContent;
- if (doautomorphism){
-  loadNodeAction(labelToAddress(thisnodelabel)); // show the node's local action in the editor
-  traceOrbitByLabel(thisnodelabel,100,true); // max orbit length 100, draw arrows true
+ // do nothing for now
+ if (false){
+  var doautomorphism = document.getElementById("thesvg").classList.contains("autoGraph");
+  var thisnodeid = this.id;
+  var thisnodelabel = this.querySelector(Node="title").textContent;
+  if (doautomorphism){
+   loadNodeAction(labelToAddress(thisnodelabel)); // show the node's local action in the editor
+   traceOrbitByLabel(thisnodelabel,100,true); // max orbit length 100, draw arrows true
+  }
  }
+
  return 0;
 }

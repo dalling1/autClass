@@ -298,6 +298,13 @@ function animate_move_vertex(vertex,vertex_path,speed=0.5,animate_edges=true){
 
    // set the opacity
    document.getElementById(vertex.svg_id()).style.opacity = useopacity;
+   // set the opacity of attached edges?
+   if (animate_edges){
+    // completely hidden vertex? completely hide any edges attached
+    // set opacity on edges with two position-undefined ends
+    G.find_edges(vertex).map(s=>document.getElementById(s.svg_id()).style.opacity = useopacity);
+   }
+
   }
 
   // perform some actions when finished:

@@ -272,15 +272,16 @@ function animate_move_vertex(vertex,vertex_path,speed=0.5,animate_edges=true){
    var segmentPercentage = 100.0*(percentage - segment*percentQuantum)/percentQuantum; // remap percentage to this piece of the path
 
    var useopacity = 1.0;
+   var opacityNonlinearity = 5.0;
    if (originalPosition==undefined && newPosition==undefined){
     // set opacity zero (CSS) #################################################
     useopacity = 0.0;
    } else if (originalPosition==undefined && newPosition!=undefined){
     // fade in (CSS) ##########################################################
-    useopacity = segmentPercentage/100.0;
+    useopacity = Math.pow(segmentPercentage/100.0,opacityNonlinearity);
    } else if (originalPosition!=undefined && newPosition==undefined){
     // fade out (CSS) #########################################################
-    useopacity = 1.0-segmentPercentage/100.0;
+    useopacity = Math.pow(1.0-segmentPercentage/100.0,opacityNonlinearity);
    } else {
    // move #########################################################
     useopacity = 1.0;

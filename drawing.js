@@ -435,6 +435,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
   edge.setAttribute("stroke","#444444"); // was f44 // edge colour
   edge.setAttribute("stroke","#ffffff"); // was f44 // edge colour
   edge.setAttribute("stroke-width","1");
+  edge.setAttribute("opacity","1.0");
   edge.setAttribute("x1",edgefrom.focusposition[0]);
   edge.setAttribute("y1",edgefrom.focusposition[1]);
   edge.setAttribute("x2",edgeto.focusposition[0]);
@@ -466,6 +467,7 @@ function draw_svg_graph(G,focusStyle,A,appendToId){
 //  vertex.classList.add("svgvertex");
 //  vertex.setAttribute("fill","#fff");
   vertex.setAttribute("stroke","none");
+  vertex.setAttribute("opacity","1.0");
   vertex.setAttribute("r",vertex_radius);
   vertex.setAttribute("title",G.vertices[i].label());
   vertex.setAttribute("cx",G.vertices[i].focusposition[0]);

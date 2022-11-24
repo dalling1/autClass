@@ -197,26 +197,27 @@ function animate_from_to(from,to,percent,method='default'){
  return [newx, newy];
 }
 
-function animate_automorphism(A,G,direction='forward',speed=1.0,method='graph'){
+function animate_automorphism(A,G,direction='forward',speed=1.0,method='graph',animate_edges=true){
  // animates an automorphism by moving the graph's SVG nodes between their original position and the mapped position
  // according to the automorphism;
  // method should be 'graph' or 'direct'
+ // animate_edges is a boolean option
 
  // move nodes along the graph edges?
  if (method=='graph'){
   if (direction=='forward'){
-   G.vertices.map(s=>animate_move_vertex(s,path_from_to(s.address,A.destination_of_address(s.address)),speed));
+   G.vertices.map(s=>animate_move_vertex(s,path_from_to(s.address,A.destination_of_address(s.address)),speed,animate_edges));
   } else if (direction=='backward'){
-   G.vertices.map(s=>animate_move_vertex(s,path_from_to(A.destination_of_address(s.address),s.address),speed));
+   G.vertices.map(s=>animate_move_vertex(s,path_from_to(A.destination_of_address(s.address),s.address),speed,animate_edges));
   } else {
    alert('Direction of animation should be forward or backward');
   }
  // move nodes on the line joining their origin and destination
  } else if (method=='direct'){
   if (direction=='forward'){
-   G.vertices.map(s=>animate_move_vertex(s,[s.address,A.destination_of_address(s.address)],speed));
+   G.vertices.map(s=>animate_move_vertex(s,[s.address,A.destination_of_address(s.address)],speed,animate_edges));
   } else if (direction=='backward'){
-   G.vertices.map(s=>animate_move_vertex(s,[A.destination_of_address(s.address),s.address],speed));
+   G.vertices.map(s=>animate_move_vertex(s,[A.destination_of_address(s.address),s.address],speed,animate_edges));
   } else {
    alert('Direction of animation should be forward or backward');
   }
@@ -224,7 +225,7 @@ function animate_automorphism(A,G,direction='forward',speed=1.0,method='graph'){
 
 }
 
-function animate_move_vertex(vertex,vertex_path,speed=0.5){
+function animate_move_vertex(vertex,vertex_path,speed=0.5,animate_edges=true){
  // move the vertex's SVG node along the given path: the path should be a list of addresses
  // Examples:
  //    path_from_to(G.vertices[0].address,G.vertices[12].address)  -- a series of addresses (node follows the graph edges)
@@ -285,6 +286,14 @@ function animate_move_vertex(vertex,vertex_path,speed=0.5){
     useopacity = 1.0;
     var intermediatePosition = animate_from_to(originalPosition,newPosition,segmentPercentage,animationStyle);
     move_vertex(vertex.svg_id(),intermediatePosition[0],intermediatePosition[1]);
+    if (animate_edges){
+     // find edges whose "from" attribute is this vertex, and update the position of that end
+     // (only do "from" to avoid double-counting, the other end gets moved with the other vertex (?))
+     // -- need to fade out edges with faded ends, or something...
+     G.find_edges_from(vertex).map(s=>move_edge(s.svg_id(),intermediatePosition[0],intermediatePosition[1],null,null));
+     // then move edges at the "other" end
+     G.find_edges_to(vertex).map(s=>move_edge(s.svg_id(),null,null,intermediatePosition[0],intermediatePosition[1]));
+    }
    }
 
    // set the opacity
@@ -399,4 +408,37 @@ function colour_vertex_squareLR(G,id){
  var V = S; // this makes things more vivid (using V=H is... interesting)
  var colour = hsv_to_rgb(H,S,V);
  document.getElementById(id).children[1].setAttribute('fill','rgb('+colour[0]+','+colour[1]+','+colour[2]+')');
+}
+
+function move_edge(id,fromx,fromy,tox,toy){
+ var el = document.getElementById(id);
+
+ if (el.childElementCount){
+  // GraphViz version (node is a group, containing an ellipse etc.)
+
+  // only moving one end?
+  if (fromx==null) fromx = el.children[1].getAttribute('x1');
+  if (fromy==null) fromy = el.children[1].getAttribute('y1');
+  if (tox==null) tox = el.children[1].getAttribute('x2');
+  if (toy==null) toy = el.children[1].getAttribute('y2');
+
+  // children[1] is the ellipse object:
+  el.children[1].setAttribute('x1',Number(fromx));
+  el.children[1].setAttribute('y1',Number(fromy));
+  el.children[1].setAttribute('x2',Number(tox));
+  el.children[1].setAttribute('y2',Number(toy));
+ } else {
+  // focus-model version (node is a circle)
+
+  // only moving one end?
+  if (fromx==null) fromx = el.getAttribute('x1');
+  if (fromy==null) fromy = el.getAttribute('y1');
+  if (tox==null) tox = el.getAttribute('x2');
+  if (toy==null) toy = el.getAttribute('y2');
+
+  el.setAttribute('x1',Number(fromx));
+  el.setAttribute('y1',Number(fromy));
+  el.setAttribute('x2',Number(tox));
+  el.setAttribute('y2',Number(toy));
+ }
 }

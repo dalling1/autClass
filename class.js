@@ -310,6 +310,24 @@ class Graph {
   }
  }
 
+ // find edges to a given vertex, V
+ find_edges_to(V){
+  var E = this.edges.map(s => s.to==V); // boolean array of matches
+  return [...E.keys()].filter(i => E[i]);
+ }
+
+ // find edges from a given vertex, V
+ find_edges_from(V){
+  var E = this.edges.map(s => s.from==V); // boolean array of matches
+  return [...E.keys()].filter(i => E[i]);
+ }
+
+ // find edges which contain a given vertex, V
+ find_edges(V){
+  var E = this.edges.map(s => s.from==V || s.to==V); // boolean array of matches
+  return [...E.keys()].filter(i => E[i]);
+ }
+
 }
 
 

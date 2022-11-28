@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+ <head>
+  <meta charset=UTF-8>
+  <title>Class-based automorphisms</title>
+  <link rel="stylesheet" href="minimal_example.css"/>
+ </head>
+ <body>
+  <div id="messages" class="inner"></div>
+  <div id="controls">
+   <div style="margin-bottom:10px;">
+    <button class="mainbutton" onclick="draw_svg_graph(G,getLayout(),A,'thegraph');setrunbuttons('G','A')">Draw G.aut(A) [o]</button><br/><br/>
+    <label for="layout">Layout:</label> <select name="layout" id="layout"><option value="auto">auto</option><option value="vertex">vertex</option><option value="edge">edge</option><option value="axis">axis</option></select><br/>
+    <label for="pathstyle">Path:</label> <select name="pathstyle" id="pathstyle"><option value="direct">direct</option><option value="graph">along graph</option></select><br/>
+    <label for="speed">Speed:</label><input type="range" id="speed" min="0.1" max="3" step="0.1" value="1.5"><br/>
+    <label for="animedges">Animate edges:</label> <input type="checkbox" name="animedges" id="animedges" checked="checked"/><br/><br/>
+    <button id="runforward" class="mainbutton animateGbuttons" onclick="msg('Choose a graph and automorphism first')">Run</button>
+    <button id="runbackward" class="mainbutton animateGbuttons" onclick="msg('Choose a graph and automorphism first')">Back</button>
+   </div>
+   <div id="Gbuttons">
+   </div>
+  </div>
+  <div id="thegraph"></div>
+
+ <script src="class.js"></script>
+ <script src="animation.js"></script>
+ <script src="drawing.js"></script>
+ <script src="minimal_example.js"></script>
+
+ <script>
+
+  /*
+    The Automorphism
+  */
+
+  var A = new Automorphism('rotationautomorphism');
+  A.valency = 3;
+  A.set_reference_address([]);
+  A.set_reference_destination([]);
+  A.add_local_action([],[2,0,1]);
+  A.set_constant_local_action();
+
+ /*
+    The Graph
+ */
+  var G = new Graph('newgraph');
+  var valency = A.valency; // make sure the graph is compatible with the automorphism
+  G.add_regular_tree(valency,5); // 94 vertices
+
+
+ </script>
+ </body>
+</html>

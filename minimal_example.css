@@ -1,0 +1,58 @@
+   html,body {
+    padding:0;
+    margin:0;
+   }
+   #messages{
+    position: fixed;
+    background: transparent;
+    height: 60px;
+    top: 80vh;
+    top: calc(100vh - 60px);
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    font-size: 14px;
+    color: #ff5;
+    box-sizing: border-box;
+   }
+   #thegraph {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #555;
+   }
+   #thegraph svg {
+    width: 99%;
+    height: 99%;
+    margin: 0;
+    padding: 0;
+    background-color: #555;
+   }
+   #controls {
+    padding: 5px;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
+    vertical-align: top;
+   }
+   #controls select {
+    vertical-align: top;
+   }
+   #controls button {
+    vertical-align: top;
+   }
+   #controls label {
+    color: #ff5;
+    vertical-align: top;
+   }
+   circle {
+    transition: fill 1s ease;
+   }
+   input[type=checkbox] {
+    vertical-align: top;
+   }
+   .mainbutton {
+    font-size: 1.5em;
+   }

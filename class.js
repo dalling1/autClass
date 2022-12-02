@@ -217,6 +217,48 @@ class Graph {
   }
  }
 
+ // function to balance a regular tree (around a given edge) by adding leaf vertices (to make edge-focused layout symmetric)
+ balance_tree(balance_edge){
+  // have we been given an Edge object?
+  if (balance_edge.type=="Edge"){
+   // yes, nothing to do yet
+  } else {
+   // no, but have we been given two addresses?  (eg. an edge stored in A.automorphism_focus)
+   if (balance_edge.length == 2){
+    balance_edge = this.find_edge_with_addresses(balance_edge[0],balance_edge[1]); // AAA.automorphism_focus[0],AAA.automorphism_focus[1])
+   }
+  }
+  console.log('Balancing around edge from '+balance_edge.from.label()+' to '+balance_edge.to.label());
+
+  // test whether vertices are closer to the "from" or "to" end of the balance edge
+  var closest_from = this.vertices.map(s=>distance_between_addresses(s.address,balance_edge.from.address)<distance_between_addresses(s.address,balance_edge.to.address));
+  var closest_to = this.vertices.map(s=>distance_between_addresses(s.address,balance_edge.to.address)<distance_between_addresses(s.address,balance_edge.from.address));
+  var from_side_vertices = [...closest_from.keys()].filter(i=>closest_from[i]).map(s=>this.vertices[s]);
+  var to_side_vertices = [...closest_to.keys()].filter(i=>closest_to[i]).map(s=>this.vertices[s]);
+  var Nfrom = from_side_vertices.length;
+  var Nto = to_side_vertices.length;
+
+  if (Nfrom == Nto){
+   // balanced, nothing to do
+   console.log('Already balanced');
+   return 0;
+  }  else if (Nfrom < Nto){
+   console.log('Unbalanced on the "from" side');
+   var use_vertices = from_side_vertices;
+   var base_vertex = balance_edge.from;
+   var balance_depth = Math.max(...to_side_vertices.map(s=>distance_between_addresses(s.address,balance_edge.to.address)));
+  } else if (Nfrom > Nto){
+   console.log('Unbalanced on the "to" side');
+   var use_vertices = to_side_vertices;
+   var base_vertex = balance_edge.to;
+   var balance_depth = Math.max(...from_side_vertices.map(s=>distance_between_addresses(s.address,balance_edge.from.address)));
+  }
+
+  // add all neighbours of the leaves up to the required distance from the "from" or "to" end of the balance edge (this is recursive):
+  use_vertices.map(s=>add_neighbours(s.address,this,balance_depth,base_vertex.address,this.valency));
+  return 0;
+ }
+
  print_all_labels(){
   this.vertices.map(v=>console.log(v.label()));
  }
